@@ -1,5 +1,5 @@
-BonusPoints:859
+BonusPoints:875
 Classic:6168
-Gravity:0
+Gravity:115
 CriticalMass:0
 Infinity:0

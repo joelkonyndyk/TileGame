@@ -2443,7 +2443,7 @@ public class TileGame {
 
 				}
 
-				if (num > 5) {
+				if (num > 4) {
 					if (num == ((numX + numY) - 1) + (numZ - 1)) {
 						T = true;
 					}
