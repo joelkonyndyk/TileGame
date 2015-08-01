@@ -29,6 +29,7 @@ public class TileGame {
 	private int[][] board;
 
 	private int[] boardRow;
+	private int[] prevBoardRow;
 
 	/** This represents the board height and length of the current game */
 	private int BDSIZE;
@@ -130,6 +131,7 @@ public class TileGame {
 	private final int large = 40;
 
 	private int moveCount = 0;
+	private int prevMoveCount;
 
 	private boolean checkedL = false;
 	private boolean checkedT = false;
@@ -168,6 +170,7 @@ public class TileGame {
 
 		board = new int[BDHEIGHT][BDWIDTH];
 		boardRow = new int[BDWIDTH];
+		prevBoardRow = new int[BDWIDTH];
 		createBoard();
 	}
 
@@ -182,6 +185,7 @@ public class TileGame {
 
 			board = new int[BDHEIGHT][BDWIDTH];
 			boardRow = new int[BDWIDTH];
+			prevBoardRow = new int[BDWIDTH];
 
 		} else if (boardSize == 2) {
 
@@ -190,6 +194,7 @@ public class TileGame {
 
 			board = new int[BDHEIGHT][BDWIDTH];
 			boardRow = new int[BDWIDTH];
+			prevBoardRow = new int[BDWIDTH];
 
 		} else if (boardSize == 3) {
 
@@ -198,6 +203,7 @@ public class TileGame {
 
 			board = new int[BDHEIGHT][BDWIDTH];
 			boardRow = new int[BDWIDTH];
+			prevBoardRow = new int[BDWIDTH];
 
 		} else {
 
@@ -206,6 +212,7 @@ public class TileGame {
 
 			board = new int[BDHEIGHT][BDWIDTH];
 			boardRow = new int[BDWIDTH];
+			prevBoardRow = new int[BDWIDTH];
 		}
 
 		if (gamemode == 0) {
@@ -241,111 +248,118 @@ public class TileGame {
 	public void createRow() {
 		for (int i = 0; i < BDWIDTH; i++) {
 			boardRow[i] = generateRandom();
+			prevBoardRow[i] = 0;
 		}
 	}
 
 	public int CheckBoard(Point p) {
-		int x = p.x;
-		int y = p.y;
-		int count = 1;
-		boardVal = board[x][y];
+		try {
+			int x = p.x;
+			int y = p.y;
+			int count = 1;
+			boardVal = board[x][y];
 
-		if (boardVal == 5)
-			return 0;
-		if (boardVal != 0) {
-			setBoardVal(x, y, 0);
+			if (boardVal == 5)
+				return 0;
+			if (boardVal != 0) {
+				setBoardVal(x, y, 0);
 
-			if (x == 0 && y == 0 || x == BDHEIGHT - 1 && y == 0 || x == 0
-					&& y == BDWIDTH - 1 || x == BDHEIGHT - 1
-					&& y == BDWIDTH - 1) {
-				if (x == 0 && y == 0) {
+				if (x == 0 && y == 0 || x == BDHEIGHT - 1 && y == 0 || x == 0
+						&& y == BDWIDTH - 1 || x == BDHEIGHT - 1
+						&& y == BDWIDTH - 1) {
+					if (x == 0 && y == 0) {
+						if (board[x + 1][y] == boardVal) {
+							count += CheckBoard(new Point(x + 1, y));
+						}
+						if (board[x][y + 1] == boardVal) {
+							count += CheckBoard(new Point(x, y + 1));
+						}
+					} else if (x == BDHEIGHT - 1 && y == 0) {
+						if (board[x - 1][y] == boardVal) {
+							count += CheckBoard(new Point(x - 1, y));
+						}
+						if (board[x][y + 1] == boardVal) {
+							count += CheckBoard(new Point(x, y + 1));
+						}
+					} else if (x == 0 && y == BDWIDTH - 1) {
+						if (board[x + 1][y] == boardVal) {
+							count += CheckBoard(new Point(x + 1, y));
+						}
+						if (board[x][y - 1] == boardVal) {
+							count += CheckBoard(new Point(x, y - 1));
+						}
+					} else if (x == BDHEIGHT - 1 && y == BDWIDTH - 1) {
+						if (board[x - 1][y] == boardVal) {
+							count += CheckBoard(new Point(x - 1, y));
+						}
+						if (board[x][y - 1] == boardVal) {
+							count += CheckBoard(new Point(x, y - 1));
+						}
+					}
+				} else if (x == 0 || x == BDHEIGHT - 1 || y == 0
+						|| y == BDWIDTH - 1) {
+					if (x == 0) {
+						if (board[x + 1][y] == boardVal) {
+							count += CheckBoard(new Point(x + 1, y));
+						}
+						if (board[x][y + 1] == boardVal) {
+							count += CheckBoard(new Point(x, y + 1));
+						}
+						if (board[x][y - 1] == boardVal) {
+							count += CheckBoard(new Point(x, y - 1));
+						}
+					} else if (x == BDHEIGHT - 1) {
+						if (board[x - 1][y] == boardVal) {
+							count += CheckBoard(new Point(x - 1, y));
+						}
+						if (board[x][y + 1] == boardVal) {
+							count += CheckBoard(new Point(x, y + 1));
+						}
+						if (board[x][y - 1] == boardVal) {
+							count += CheckBoard(new Point(x, y - 1));
+						}
+					} else if (y == 0) {
+						if (board[x + 1][y] == boardVal) {
+							count += CheckBoard(new Point(x + 1, y));
+						}
+						if (board[x - 1][y] == boardVal) {
+							count += CheckBoard(new Point(x - 1, y));
+						}
+						if (board[x][y + 1] == boardVal) {
+							count += CheckBoard(new Point(x, y + 1));
+						}
+					} else if (y == BDWIDTH - 1) {
+						if (board[x + 1][y] == boardVal) {
+							count += CheckBoard(new Point(x + 1, y));
+						}
+						if (board[x - 1][y] == boardVal) {
+							count += CheckBoard(new Point(x - 1, y));
+						}
+						if (board[x][y - 1] == boardVal) {
+							count += CheckBoard(new Point(x, y - 1));
+						}
+					}
+				} else {
 					if (board[x + 1][y] == boardVal) {
 						count += CheckBoard(new Point(x + 1, y));
 					}
-					if (board[x][y + 1] == boardVal) {
-						count += CheckBoard(new Point(x, y + 1));
-					}
-				} else if (x == BDHEIGHT - 1 && y == 0) {
 					if (board[x - 1][y] == boardVal) {
 						count += CheckBoard(new Point(x - 1, y));
 					}
 					if (board[x][y + 1] == boardVal) {
 						count += CheckBoard(new Point(x, y + 1));
 					}
-				} else if (x == 0 && y == BDWIDTH - 1) {
-					if (board[x + 1][y] == boardVal) {
-						count += CheckBoard(new Point(x + 1, y));
-					}
 					if (board[x][y - 1] == boardVal) {
 						count += CheckBoard(new Point(x, y - 1));
 					}
-				} else if (x == BDHEIGHT - 1 && y == BDWIDTH - 1) {
-					if (board[x - 1][y] == boardVal) {
-						count += CheckBoard(new Point(x - 1, y));
-					}
-					if (board[x][y - 1] == boardVal) {
-						count += CheckBoard(new Point(x, y - 1));
-					}
-				}
-			} else if (x == 0 || x == BDHEIGHT - 1 || y == 0
-					|| y == BDWIDTH - 1) {
-				if (x == 0) {
-					if (board[x + 1][y] == boardVal) {
-						count += CheckBoard(new Point(x + 1, y));
-					}
-					if (board[x][y + 1] == boardVal) {
-						count += CheckBoard(new Point(x, y + 1));
-					}
-					if (board[x][y - 1] == boardVal) {
-						count += CheckBoard(new Point(x, y - 1));
-					}
-				} else if (x == BDHEIGHT - 1) {
-					if (board[x - 1][y] == boardVal) {
-						count += CheckBoard(new Point(x - 1, y));
-					}
-					if (board[x][y + 1] == boardVal) {
-						count += CheckBoard(new Point(x, y + 1));
-					}
-					if (board[x][y - 1] == boardVal) {
-						count += CheckBoard(new Point(x, y - 1));
-					}
-				} else if (y == 0) {
-					if (board[x + 1][y] == boardVal) {
-						count += CheckBoard(new Point(x + 1, y));
-					}
-					if (board[x - 1][y] == boardVal) {
-						count += CheckBoard(new Point(x - 1, y));
-					}
-					if (board[x][y + 1] == boardVal) {
-						count += CheckBoard(new Point(x, y + 1));
-					}
-				} else if (y == BDWIDTH - 1) {
-					if (board[x + 1][y] == boardVal) {
-						count += CheckBoard(new Point(x + 1, y));
-					}
-					if (board[x - 1][y] == boardVal) {
-						count += CheckBoard(new Point(x - 1, y));
-					}
-					if (board[x][y - 1] == boardVal) {
-						count += CheckBoard(new Point(x, y - 1));
-					}
-				}
-			} else {
-				if (board[x + 1][y] == boardVal) {
-					count += CheckBoard(new Point(x + 1, y));
-				}
-				if (board[x - 1][y] == boardVal) {
-					count += CheckBoard(new Point(x - 1, y));
-				}
-				if (board[x][y + 1] == boardVal) {
-					count += CheckBoard(new Point(x, y + 1));
-				}
-				if (board[x][y - 1] == boardVal) {
-					count += CheckBoard(new Point(x, y - 1));
 				}
 			}
+			return count;
+		} catch (Exception e) {
+			System.out.println("Clicked to fast again!");
+			return 0;
 		}
-		return count;
+
 	}
 
 	public int countTiles(Point p) {
@@ -472,32 +486,35 @@ public class TileGame {
 
 		int count = countTiles(p);
 
-		// System.out.println(count);
-		alreadyChecked.clear();
-		checkSquare(x, y, count);
-		if (!square) {
+		try {
 			alreadyChecked.clear();
-			checkLine(x, y, count);
-		}
-		if (!line) {
-			alreadyChecked.clear();
-			checkCorner(x, y, count);
-		}
-		if (!corner) {
-			alreadyChecked.clear();
-			checkStairs(x, y, count);
-		}
-		if (!stairs) {
-			alreadyChecked.clear();
-			checkCross(x, y, count);
-		}
-		if (!cross) {
-			alreadyChecked.clear();
-			checkT(x, y, count);
-		}
-		if (!T) {
-			alreadyChecked.clear();
-			checkL(x, y, count);
+			checkSquare(x, y, count);
+			if (!square) {
+				alreadyChecked.clear();
+				checkLine(x, y, count);
+			}
+			if (!line) {
+				alreadyChecked.clear();
+				checkCorner(x, y, count);
+			}
+			if (!corner) {
+				alreadyChecked.clear();
+				checkStairs(x, y, count);
+			}
+			if (!stairs) {
+				alreadyChecked.clear();
+				checkCross(x, y, count);
+			}
+			if (!cross) {
+				alreadyChecked.clear();
+				checkT(x, y, count);
+			}
+			if (!T) {
+				alreadyChecked.clear();
+				checkL(x, y, count);
+			}
+		} catch (Exception e) {
+			System.out.println("");
 		}
 
 	}
@@ -713,20 +730,18 @@ public class TileGame {
 			} else if (sides == 2) {
 
 				if (up && down) {
+
 					while (inBounds(x - numX, y) && inBounds(x + numY, y)
 							&& temp == board[x - numX][y]
 							|| temp == board[x + numY][y]) {
 
-						if (inBounds(x + numY, y) && temp == board[x + numY][y]) {
-							numY++;
-						}
 						if (inBounds(x - numX, y) && temp == board[x - numX][y]) {
 							numX++;
 						}
-
+						if (inBounds(x + numY, y) && temp == board[x + numY][y]) {
+							numY++;
+						}
 					}
-
-					// System.out.println(numX + numY);
 
 				} else if (left && right) {
 
@@ -2796,9 +2811,11 @@ public class TileGame {
 	}
 
 	public void mergeRow() {
+		// prevBoardRow = boardRow;
 		int temp = 0;
 
 		for (int i = 0; i < BDWIDTH; i++) {
+			prevBoardRow[i] = boardRow[i];
 			if (boardRow[i] != 0 && board[0][i] == 0) {
 
 				board[0][i] = boardRow[i];
@@ -2814,6 +2831,7 @@ public class TileGame {
 		if (temp == BDWIDTH) {
 			dropRow = false;
 			displayRow = false;
+			prevMoveCount = moveCount;
 			moveCount = 0;
 		}
 
@@ -3314,6 +3332,20 @@ public class TileGame {
 					i++;
 				}
 			}
+
+			for (int b = 0; b < BDWIDTH; b++) {
+				boardRow[b] = prevBoardRow[b];
+			}
+
+			// if (moveCount == 0) {
+			// moveCount = prevMoveCount;
+			// } else {
+			// moveCount--;
+			// }
+
+			// System.out.println(moveCount);
+
+			// boardRow = prevBoardRow;
 
 			score = scoreUndoList.peek();
 			scoreUndoList.pop();

@@ -32,7 +32,6 @@ import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 
 public class GamePanel extends JPanel {
-
 	/** This represents the universal version identifier of ConnectFourPanel */
 	private static final long serialVersionUID = 12345678910L;
 

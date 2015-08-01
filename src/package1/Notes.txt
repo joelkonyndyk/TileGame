@@ -2,9 +2,11 @@
 Game Notes / Ideas:
 //***********************
 
+[] row does not drop all the way when it gets to the correct count
+
 [] Stop shape string from displaying when the board is cleared
 
-[] on board clear either fill board or initiate game over
+[] on board clear, either fill board or initiate game over
 
 [] save moveCount and board row if visible so that they can be accessed when game is re-opened
 
