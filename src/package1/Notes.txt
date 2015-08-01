@@ -1,0 +1,98 @@
+//***********************
+Game Notes / Ideas:
+//***********************
+
+[] Stop shape string from displaying when the board is cleared
+
+[] on board clear either fill board or initiate game over
+
+[] save moveCount and board row if visible so that they can be accessed when game is re-opened
+
+[] add text if break score is over a certain amount
+	[] 100pts -"Nice Break!"
+	[] 150pts - "Awesome!"
+	[] 200pts - "Neato!"
+
+[] return row to top when undo is pressed (currently it just disappears)
+
+[] add power-ups that use bonus points
+	[+] row swap - classic mode -5
+	[+] tile filler - fills gameboard full, turns tiles still on board into unbreakable tiles -50
+	[+] drop row - drops row immediately once it is visible -10
+	[+] Critical Mass, Destroy largest percentage of black tiles -100
+
+[] add reduction of board size in gravity game mode with extra tiles able to be added in 
+
+[] critical mass, change the picture of the black tiles as they grow in percentage size
+
+[] add game descriptions in game and remove after first click or after a certain amount of time
+
+[] make animation of tiles falling 
+
+[] create options panel
+	game speed
+	tile size
+	effects
+	sounds
+	music
+	skins
+
+[] enable game modes to add additional layers of tiles at certain moments
+	[+] classic
+	[] Gravity
+	
+[] add new game modes
+	[] power of two- move tiles in different directions to add them up to higher tiles till board is filled
+	[] tile swapper- allow only certian number of moves
+	[] bricks breaker - bounce ball off bottom tile to break the others
+	[] twelve - combine like tiles together to increase number, goal is to get to twelve
+	[] tetris - create a tetris style game mode
+	
+//****************************************************************************************
+COMPLETED!
+//****************************************************************************************
+7-12-15
+[+] add bonus in classic if the entire board is cleared (1,000pts?)
+[+] Give bonus pts when clearing the board (100pts?)
+[+] When starting game after a game over only allow a new game 
+[+] Add score to display on game over screen
+7-11-15
+[+] fix bugs with checking shapes and checking shapes on the edge of the board
+[+] when tile is clicked on side of screen have text display on screen
+[+] fix check corner error, check corner same way as stair but add end 
+[+] shape checking when some shapes are on edge of screen
+[+] fix shape checking, implement an already checked list to cross check shapes
+	[+] corner
+	[+] square
+	[+] line
+	[+] stairs
+	[+] L
+	[+] T
+	[+] cross
+[+] shape points are not displaying when shape is to big
+UNKNOWN
+[+] make count click not increase when game over is present
+[+] add key binding to "u" so that it performs undo function
+[+] gray out undo button when undo list is empty
+[+] undo list text does not appear when undo list is empty
+[+] save undoList
+[+] add descriptions for power ups when user leaves mouse over it for a certian amount of time
+[+] fix bug where when selecting new game initially displayed tiles are swapped for ones of current game
+[+] add a penalty for using the undo button -25pts
+[+] switch calculating scores to a formula instead of an array 
+[+] display text based on time instead of on ticks - to prevent speeding up of text towards end of game
+[+] dont allow next row to appear until after 50% of the board is gone/ or set to points needed in order to get row 
+[+] create load screen on start up, displays Bunker Omega Studios	
+[+] figure out how to take screen shot of current screen and save it to file
+[+] display screenshot as background image// make screenshot work when exiting the game
+[+] implement saving current game to file and loading it to continue game
+[+] fix bugs with critical mass game mode - bugs using undo when game initially loaded
+[+] fix displaying game over in gravity mode when there are still possible moves
+	make display that says game over in 3...2...1
+[+] display percentages of mass in critical mass game mode
+[+] fix Critical Mass bug with different directions and drop tiles method
+[+] display points when critical mass tiles break
+[+] add point display in middle of screen when critical mass is broken
+[+] remove bonus points given when game mode is on infinity
+
+
