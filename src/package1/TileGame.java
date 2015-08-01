@@ -571,7 +571,8 @@ public class TileGame {
 					}
 					for (int i = 0; i < countX; i++) {
 						for (int j = 0; j < countX; j++) {
-							if (temp == board[x + i][y + j]) {
+							if (inBounds(x + i, y + j)
+									&& temp == board[x + i][y + j]) {
 								count++;
 							} else {
 								nonTemp++;
