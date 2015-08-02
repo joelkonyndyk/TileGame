@@ -366,38 +366,7 @@ public class GamePanel extends JPanel {
 				}
 			}
 		}
-		for (int i = 0; i < BDWIDTH; i++) {
-			int temp = tileGame.getBoardRowVal(i);
-
-			int tempX = (gameRect.y + spacing - tilesize - 10);
-
-			if (temp == 1) {
-
-				tileRow[i] = new Tile(tempX, (i * tilesize) + gameRect.x
-						+ spacing, 1, 1, tex, game, c);
-
-			} else if (temp == 2) {
-
-				tileRow[i] = new Tile(tempX, (i * tilesize) + gameRect.x
-						+ spacing, 2, 1, tex, game, c);
-
-			} else if (temp == 3) {
-
-				tileRow[i] = new Tile(tempX, (i * tilesize) + gameRect.x
-						+ spacing, 3, 1, tex, game, c);
-
-			} else if (temp == 4) {
-
-				tileRow[i] = new Tile(tempX, (i * tilesize) + gameRect.x
-						+ spacing, 4, 1, tex, game, c);
-
-			} else if (temp == 5) {
-
-				tileRow[i] = new Tile(tempX, (i * tilesize) + gameRect.x
-						+ spacing, 5, 1, tex, game, c);
-
-			}
-		}
+		updateTileRow();
 
 		upRectangle = new Rectangle(game.getWidth() - 120, 65 - 32, 32, 32);
 		downRectangle = new Rectangle(game.getWidth() - 120, 65 + 32, 32, 32);
@@ -460,12 +429,12 @@ public class GamePanel extends JPanel {
 
 		// draws the top row that is about to drop
 		if (tileGame.getGameMode() == classic && tileGame.getDisplayRow()) {
+			updateTileRow();
 			for (int i = 0; i < BDWIDTH; i++) {
 				if (tileGame.getBoardRowVal(i) != 0) {
 					tileRow[i].render(g2d);
 				}
 			}
-
 		}
 		g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER,
 				1.0f));
@@ -629,22 +598,6 @@ public class GamePanel extends JPanel {
 							mouseLocation.y + 32, g2d);
 				}
 			}
-
-			// if (!tileGame.getBoardCleared()){
-			// tileGame.boardCleared();
-			// }
-
-			// if (tileGame.getBoardCleared()) {
-			//
-			// c.addEntity(new Text("Board Cleared!", game, c,
-			// game.getWidth() / 2, game.getHeight() / 2));
-			//
-			// tileGame.setBoardCleared(false);
-			//
-			// // DrawOutline("Board Cleared!", game.getWidth() / 2,
-			// // game.getHeight() / 2, g2d);
-			// }
-
 		}
 
 		if (tileGame.gameMode == criticalMass) {
@@ -810,7 +763,6 @@ public class GamePanel extends JPanel {
 
 			if (tileGame.getDropRow()) {
 				tileGame.mergeRow();
-				DropTiles();
 			}
 			if (tileGame.getDisplayRow() && !tileGame.getDropRow()) {
 				showSwapDrop = true;
@@ -843,17 +795,11 @@ public class GamePanel extends JPanel {
 			time.reset();
 		}
 
-		// if (!tileGame.isGameOver()){
-		// displayClearBoard = true;
-		// }
-
 		boardCleared();
 		if (!isBoardCleared()) {
 			// displayClearBoard = true;
 			tileGame.setDisplayClearBoard(true);
 		}
-
-		// colorIndex++;
 
 		c.tick();
 	}
@@ -879,30 +825,6 @@ public class GamePanel extends JPanel {
 		g2d.setColor(clr);
 		g2d.drawString(str, x, y);
 	}
-
-	// public void DrawMovingText(String str, int x, int y, Graphics2D g2d) {
-	//
-	// if (movingText < 20) {
-	//
-	// g2d.setColor(Color.BLACK);
-	// g2d.drawString(str, (x - 1), y - movingText);
-	// g2d.drawString(str, (x + 1), y - movingText);
-	// g2d.drawString(str, x, (y - 1) - movingText);
-	// g2d.drawString(str, x, (y + 1) - movingText);
-	//
-	// g2d.setColor(Color.WHITE);
-	// g2d.drawString(str, x, y - movingText);
-	//
-	// movingText++;
-	//
-	// showMovingText = true;
-	//
-	// } else {
-	// movingText = 0;
-	// showMovingText = false;
-	//
-	// }
-	// }
 
 	public void setDirection(int i) {
 		tileGame.setDirection(i);
@@ -987,14 +909,6 @@ public class GamePanel extends JPanel {
 
 		if (clickPoint != null && !tileGame.CheckSingle(clickPoint)) {
 			int count;
-
-			// if (tileGame.getBoardCleared()) {
-			//
-			// c.addEntity(new Text("Board Cleared!", game, c,
-			// game.getWidth() / 2, game.getHeight() / 2));
-			//
-			// tileGame.setBoardCleared(false);
-			// }
 
 			if (actualClickPoint.x > game.getWidth() - 175) {
 				clickPt = game.getWidth() - 175;
@@ -1110,23 +1024,6 @@ public class GamePanel extends JPanel {
 				}
 			}
 		}
-
-		// if (tileGame.getBoardCleared()) {
-		// Text t = new Text("Board Cleared! +1000pts!", game, c,
-		// (game.getWidth() / 2) - 200, (game.getHeight() / 2) - 100);
-		// t.setFont(new Font("arial", Font.BOLD, 36));
-		// t.setSpeed(2);
-		//
-		// Text t1 = new Text("Bonus Points! +100!", game, c,
-		// (game.getWidth() / 2) - 175, (game.getHeight() / 2) - 50);
-		// t1.setFont(new Font("arial", Font.BOLD, 36));
-		// t1.setSpeed(2);
-		//
-		// c.addEntity(t);
-		// c.addEntity(t1);
-		//
-		// tileGame.setBoardCleared(false);
-		// }
 
 		if (tileGame.getGameMode() == criticalMass) {
 
@@ -1281,6 +1178,42 @@ public class GamePanel extends JPanel {
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		}
+	}
+
+	public void updateTileRow() {
+
+		for (int i = 0; i < BDWIDTH; i++) {
+			int temp = tileGame.getBoardRowVal(i);
+
+			int tempX = (gameRect.y + spacing - tilesize - 10);
+
+			if (temp == 1) {
+
+				tileRow[i] = new Tile(tempX, (i * tilesize) + gameRect.x
+						+ spacing, 1, 1, tex, game, c);
+
+			} else if (temp == 2) {
+
+				tileRow[i] = new Tile(tempX, (i * tilesize) + gameRect.x
+						+ spacing, 2, 1, tex, game, c);
+
+			} else if (temp == 3) {
+
+				tileRow[i] = new Tile(tempX, (i * tilesize) + gameRect.x
+						+ spacing, 3, 1, tex, game, c);
+
+			} else if (temp == 4) {
+
+				tileRow[i] = new Tile(tempX, (i * tilesize) + gameRect.x
+						+ spacing, 4, 1, tex, game, c);
+
+			} else if (temp == 5) {
+
+				tileRow[i] = new Tile(tempX, (i * tilesize) + gameRect.x
+						+ spacing, 5, 1, tex, game, c);
+
+			}
 		}
 	}
 
@@ -1507,38 +1440,7 @@ public class GamePanel extends JPanel {
 	public void loadCurrentGame() {
 		tileGame.loadCurrentGame();
 		moveCount = tileGame.getMoveCount();
-		for (int i = 0; i < BDWIDTH; i++) {
-			int temp = tileGame.getBoardRowVal(i);
-
-			int tempX = (gameRect.y + spacing - tilesize - 10);
-
-			if (temp == 1) {
-
-				tileRow[i] = new Tile(tempX, (i * tilesize) + gameRect.x
-						+ spacing, 1, 1, tex, game, c);
-
-			} else if (temp == 2) {
-
-				tileRow[i] = new Tile(tempX, (i * tilesize) + gameRect.x
-						+ spacing, 2, 1, tex, game, c);
-
-			} else if (temp == 3) {
-
-				tileRow[i] = new Tile(tempX, (i * tilesize) + gameRect.x
-						+ spacing, 3, 1, tex, game, c);
-
-			} else if (temp == 4) {
-
-				tileRow[i] = new Tile(tempX, (i * tilesize) + gameRect.x
-						+ spacing, 4, 1, tex, game, c);
-
-			} else if (temp == 5) {
-
-				tileRow[i] = new Tile(tempX, (i * tilesize) + gameRect.x
-						+ spacing, 5, 1, tex, game, c);
-
-			}
-		}
+		updateTileRow();
 	}
 
 	public void subtractMoveCount() {
@@ -1605,7 +1507,11 @@ public class GamePanel extends JPanel {
 	}
 
 	public void setGameMode(int gm) {
+
 		tileGame = new TileGame(boardSize, gm);
+		if (gm == 1) {
+			tileGame.createRow();
+		}
 		// tileGame.setGameMode(gm);
 	}
 
@@ -1627,38 +1533,6 @@ public class GamePanel extends JPanel {
 
 	public void createNewRow() {
 		tileGame.createRow();
-
-		for (int i = 0; i < BDWIDTH; i++) {
-			int temp = tileGame.getBoardRowVal(i);
-
-			int tempX = (gameRect.y + spacing - tilesize - 10);
-
-			if (temp == 1) {
-
-				tileRow[i] = new Tile(tempX, (i * tilesize) + gameRect.x
-						+ spacing, 1, 1, tex, game, c);
-
-			} else if (temp == 2) {
-
-				tileRow[i] = new Tile(tempX, (i * tilesize) + gameRect.x
-						+ spacing, 2, 1, tex, game, c);
-
-			} else if (temp == 3) {
-
-				tileRow[i] = new Tile(tempX, (i * tilesize) + gameRect.x
-						+ spacing, 3, 1, tex, game, c);
-
-			} else if (temp == 4) {
-
-				tileRow[i] = new Tile(tempX, (i * tilesize) + gameRect.x
-						+ spacing, 4, 1, tex, game, c);
-
-			} else if (temp == 5) {
-
-				tileRow[i] = new Tile(tempX, (i * tilesize) + gameRect.x
-						+ spacing, 5, 1, tex, game, c);
-
-			}
-		}
+		updateTileRow();
 	}
 }

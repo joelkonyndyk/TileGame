@@ -97,7 +97,7 @@ public class TileGame {
 	private int massSize;
 	private final float showCMSize = (float) .05;
 
-	private int rowDisplayCount = 15;
+	private final int rowDisplayCount = 15;
 
 	private boolean highScore = false;
 
@@ -2792,7 +2792,7 @@ public class TileGame {
 
 		if (moveCount > rowDisplayCount - 1) {
 			if (!displayRow) {
-				moveCount = rowDisplayCount;
+				// moveCount = rowDisplayCount;
 			}
 			displayRow = true;
 		} else {
@@ -2800,14 +2800,26 @@ public class TileGame {
 			dropRow = false;
 		}
 
-		if (moveCount == rowDisplayCount) {
+		if (moveCount == rowDisplayCount && rowEmpty()) {
 			createRow();
 		} else if (moveCount >= rowDisplayCount + 10) {
-
 			dropRow = true;
-
 		}
 
+	}
+
+	public boolean rowEmpty() {
+		int count = 0;
+
+		for (int i = 0; i < BDWIDTH; i++) {
+			if (boardRow[i] == 0) {
+				count++;
+			}
+		}
+		if (count == BDWIDTH) {
+			return true;
+		}
+		return false;
 	}
 
 	public void mergeRow() {
@@ -2831,9 +2843,11 @@ public class TileGame {
 		if (temp == BDWIDTH) {
 			dropRow = false;
 			displayRow = false;
-			prevMoveCount = moveCount;
+			// prevMoveCount = moveCount;
 			moveCount = 0;
 		}
+
+		DropTiles();
 
 	}
 
@@ -3748,11 +3762,17 @@ public class TileGame {
 	}
 
 	public void addMoveCount() {
+		// prevMoveCount = moveCount;
 		moveCount++;
 	}
 
 	public void subtractMoveCount() {
-		moveCount--;
+		if (moveCount > 0) {
+			moveCount--;
+		} else if (moveCount == 0) {
+			// moveCount = prevMoveCount;
+			moveCount = rowDisplayCount + 9;
+		}
 	}
 
 	// Getters and Setters

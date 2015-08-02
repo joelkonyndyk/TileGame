@@ -247,6 +247,7 @@ public class MouseInput implements MouseListener, MouseMotionListener {
 				gamePanel.setGameIsOver(false);
 				gamePanel.setGameMode(1);
 				gamePanel.setMoveCount(0);
+//				gamePanel.updateTileRow();
 				Game.State = GameState.GAME;
 			}
 

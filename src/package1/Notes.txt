@@ -2,20 +2,14 @@
 Game Notes / Ideas:
 //***********************
 
-[] row does not drop all the way when it gets to the correct count
-
 [] Stop shape string from displaying when the board is cleared
 
 [] on board clear, either fill board or initiate game over
-
-[] save moveCount and board row if visible so that they can be accessed when game is re-opened
 
 [] add text if break score is over a certain amount
 	[] 100pts -"Nice Break!"
 	[] 150pts - "Awesome!"
 	[] 200pts - "Neato!"
-
-[] return row to top when undo is pressed (currently it just disappears)
 
 [] add power-ups that use bonus points
 	[+] row swap - classic mode -5
@@ -53,6 +47,12 @@ Game Notes / Ideas:
 //****************************************************************************************
 COMPLETED!
 //****************************************************************************************
+8-01-15
+[+] fixed multiple issues dealing with fringe shape checking issues
+[+] Added try/catch statements to resolve errors caused by clicking to quickly
+[+] return row to top when undo is pressed (currently it just disappears)
+[+] save moveCount and board row if visible so that they can be accessed when game is re-opened
+[+] row does not drop all the way when it gets to the correct count
 7-12-15
 [+] add bonus in classic if the entire board is cleared (1,000pts?)
 [+] Give bonus pts when clearing the board (100pts?)
