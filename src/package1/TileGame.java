@@ -514,9 +514,8 @@ public class TileGame {
 				checkL(x, y, count);
 			}
 		} catch (Exception e) {
-			System.out.println("");
+			System.out.println("Error Checking Shapes!");
 		}
-
 	}
 
 	public void checkSquare(int x, int y, int num) {
@@ -731,31 +730,45 @@ public class TileGame {
 
 				if (up && down) {
 
-					while (inBounds(x - numX, y) && inBounds(x + numY, y)
-							&& temp == board[x - numX][y]
-							|| temp == board[x + numY][y]) {
+					while (inBounds(x - numX, y) && inBounds(x + numY, y)) {
 
-						if (inBounds(x - numX, y) && temp == board[x - numX][y]) {
-							numX++;
-						}
-						if (inBounds(x + numY, y) && temp == board[x + numY][y]) {
-							numY++;
+						if (temp == board[x - numX][y]
+								|| temp == board[x + numY][y]) {
+
+							if (temp == board[x - numX][y]) {
+								numX++;
+							}
+							if (temp == board[x + numY][y]) {
+								numY++;
+							}
+						} else {
+							break;
 						}
 					}
 
 				} else if (left && right) {
 
-					while (inBounds(x, y - numX) && inBounds(x, y + numY)
-							&& temp == board[x][y - numX]
-							|| temp == board[x][y + numY]) {
+					while (inBounds(x, y - numX) || inBounds(x, y + numY)) {
 
-						if (inBounds(x, y + numY) && temp == board[x][y + numY]) {
+						if (temp == board[x][y + numY]) {
 							numY++;
 						}
-						if (inBounds(x, y - numX) && temp == board[x][y - numX]) {
+						if (temp == board[x][y - numX]) {
 							numX++;
 						}
 
+						// if (temp == board[x][y + numY]
+						// || temp == board[x][y - numX]) {
+						//
+						// if (temp == board[x][y + numY]) {
+						// numY++;
+						// }
+						// if (temp == board[x][y - numX]) {
+						// numX++;
+						// }
+						// } else {
+						// break;
+						// }
 					}
 				}
 
@@ -764,14 +777,6 @@ public class TileGame {
 				}
 
 			}
-			// else {
-			// line = false;
-			//
-			// left = false;
-			// right = false;
-			// up = false;
-			// down = false;
-			// }
 		}
 	}
 
@@ -822,7 +827,6 @@ public class TileGame {
 				if (up) {
 
 					if (inBounds(x - 1, y - 1) && temp == board[x - 1][y - 1]) {
-
 						while (inBounds(x - xNum, y - yNum)
 								&& temp == board[x - xNum][y - yNum]) {
 							count++;
@@ -833,19 +837,8 @@ public class TileGame {
 							}
 						}
 
-						// count = 0;
-						// while (inBounds(x - xNum, y - yNum)
-						// && temp == board[x - xNum][y - yNum]) {
-						// count++;
-						// if (count % 2 == 0) {
-						// xNum++;
-						// } else {
-						// yNum++;
-						// }
-						// }
 					} else if (inBounds(x - 1, y + 1)
 							&& temp == board[x - 1][y + 1]) {
-						// count = 0;
 						while (inBounds(x - xNum, y + yNum)
 								&& temp == board[x - xNum][y + yNum]) {
 							count++;
@@ -1861,40 +1854,44 @@ public class TileGame {
 								checkCross(x + 1, y, num);
 							}
 						} else {
+
 							while (inBounds(x - numX, y)
-									&& inBounds(x + numY, y)
-									&& temp == board[x - numX][y]
-									|| temp == board[x + numY][y]) {
+									&& inBounds(x + numY, y)) {
 
-								if (inBounds(x + (numX + 1), y)
-										&& temp == board[x + (numX + 1)][y]
-										&& inBounds(x + numX, y + 1)
-										&& temp == board[x + numX][y + 1]
-										&& inBounds(x + numX, y - 1)
-										&& temp == board[x + numX][y - 1]) {
+								if (temp == board[x - numX][y]
+										|| temp == board[x + numY][y]) {
 
-									checkCross(x + numX, y, num);
+									if (inBounds(x + (numX + 1), y)
+											&& temp == board[x + (numX + 1)][y]
+											&& inBounds(x + numX, y + 1)
+											&& temp == board[x + numX][y + 1]
+											&& inBounds(x + numX, y - 1)
+											&& temp == board[x + numX][y - 1]) {
 
-								} else if (inBounds(x - (numY + 1), y)
-										&& temp == board[x - (numY + 1)][y]
-										&& inBounds(x - numY, y + 1)
-										&& temp == board[x - numY][y + 1]
-										&& inBounds(x - numY, y - 1)
-										&& temp == board[x - numY][y - 1]) {
+										checkCross(x + numX, y, num);
 
-									checkCross(x - numY, y, num);
+									} else if (inBounds(x - (numY + 1), y)
+											&& temp == board[x - (numY + 1)][y]
+											&& inBounds(x - numY, y + 1)
+											&& temp == board[x - numY][y + 1]
+											&& inBounds(x - numY, y - 1)
+											&& temp == board[x - numY][y - 1]) {
 
+										checkCross(x - numY, y, num);
+
+									}
+
+									if (inBounds(x + numY, y)
+											&& temp == board[x + numY][y]) {
+										numY++;
+									}
+									if (inBounds(x - numX, y)
+											&& temp == board[x - numX][y]) {
+										numX++;
+									}
+								} else {
+									break;
 								}
-
-								if (inBounds(x + numY, y)
-										&& temp == board[x + numY][y]) {
-									numY++;
-								}
-								if (inBounds(x - numX, y)
-										&& temp == board[x - numX][y]) {
-									numX++;
-								}
-
 							}
 						}
 
@@ -1910,37 +1907,39 @@ public class TileGame {
 							}
 						} else {
 							while (inBounds(x, y - numX)
-									&& inBounds(x, y + numY)
-									&& temp == board[x][y - numX]
-									|| temp == board[x][y + numY]) {
+									&& inBounds(x, y + numY)) {
 
-								if (inBounds(x, y + (numX + 1))
-										&& temp == board[x][y + (numX + 1)]
-										&& inBounds(x + 1, y + numX)
-										&& temp == board[x + 1][y + numX]
-										&& inBounds(x - 1, y + numX)
-										&& temp == board[x - 1][y + numX]) {
+								if (temp == board[x][y - numX]
+										|| temp == board[x][y + numY]) {
 
-									checkCross(x, y + numX, num);
+									if (inBounds(x, y + (numX + 1))
+											&& temp == board[x][y + (numX + 1)]
+											&& inBounds(x + 1, y + numX)
+											&& temp == board[x + 1][y + numX]
+											&& inBounds(x - 1, y + numX)
+											&& temp == board[x - 1][y + numX]) {
 
-								} else if (inBounds(x, y - (numY + 1))
-										&& temp == board[x][y - (numY + 1)]
-										&& inBounds(x + 1, y - numY)
-										&& temp == board[x + 1][y - numY]
-										&& inBounds(x - 1, y - numY)
-										&& temp == board[x - 1][y - numY]) {
+										checkCross(x, y + numX, num);
 
-									checkCross(x, y - numY, num);
+									} else if (inBounds(x, y - (numY + 1))
+											&& temp == board[x][y - (numY + 1)]
+											&& inBounds(x + 1, y - numY)
+											&& temp == board[x + 1][y - numY]
+											&& inBounds(x - 1, y - numY)
+											&& temp == board[x - 1][y - numY]) {
 
-								}
+										checkCross(x, y - numY, num);
 
-								if (inBounds(x, y + numY)
-										&& temp == board[x][y + numY]) {
-									numY++;
-								}
-								if (inBounds(x, y - numX)
-										&& temp == board[x][y - numX]) {
-									numX++;
+									}
+
+									if (temp == board[x][y + numY]) {
+										numY++;
+									}
+									if (temp == board[x][y - numX]) {
+										numX++;
+									}
+								} else {
+									break;
 								}
 
 							}
@@ -2071,17 +2070,22 @@ public class TileGame {
 
 				if (up && down) {
 
-					while (inBounds(x - numX, y) && inBounds(x + numY, y)
-							&& temp == board[x - numX][y]
-							|| temp == board[x + numY][y]) {
+					while (inBounds(x - numX, y) && inBounds(x + numY, y)) {
 
-						if (inBounds(x - numX, y) && temp == board[x - numX][y]) {
-							numX++;
-						}
-						if (inBounds(x + numY, y) && temp == board[x + numY][y]) {
-							numY++;
+						if (temp == board[x - numX][y]
+								|| temp == board[x + numY][y]) {
+
+							if (temp == board[x - numX][y]) {
+								numX++;
+							}
+							if (temp == board[x + numY][y]) {
+								numY++;
+							}
+						} else {
+							break;
 						}
 					}
+
 					numX -= 1;
 					numY -= 1;
 					checkL(x - numX, y, num);
@@ -2089,15 +2093,20 @@ public class TileGame {
 
 				} else if (left && right) {
 
-					while (inBounds(x, y - numX) && inBounds(x, y + numY)
-							&& temp == board[x][y - numX]
-							|| temp == board[x][y + numY]) {
+					while (inBounds(x, y - numX) && inBounds(x, y + numY)) {
 
-						if (inBounds(x, y - numX) && temp == board[x][y - numX]) {
-							numX++;
-						}
-						if (inBounds(x, y + numY) && temp == board[x][y + numY]) {
-							numY++;
+						if (temp == board[x][y - numX]
+								|| temp == board[x][y + numX]) {
+
+							if (temp == board[x][y - numX]) {
+								numX++;
+							}
+							if (temp == board[x][y + numY]) {
+								numY++;
+							}
+
+						} else {
+							break;
 						}
 					}
 					numX -= 1;
@@ -2107,60 +2116,74 @@ public class TileGame {
 
 				} else if (up && left) {
 
-					while (inBounds(x - numX, y) && inBounds(x, y - numY)
-							&& temp == board[x - numX][y]
-							&& temp == board[x][y - numY]) {
+					while (inBounds(x - numX, y) && inBounds(x, y - numY)) {
 
-						if (inBounds(x - numX, y) && temp == board[x - numX][y]) {
-							numX++;
-						}
-						if (inBounds(x, y - numY) && temp == board[x][y - numY]) {
-							numY++;
+						if (temp == board[x - numX][y]
+								|| temp == board[x][y - numX]) {
+
+							if (temp == board[x - numX][y]) {
+								numX++;
+							}
+							if (temp == board[x][y - numY]) {
+								numY++;
+							}
+						} else {
+							break;
 						}
 					}
 
 				} else if (up && right) {
 
-					while (inBounds(x - numX, y) && inBounds(x, y + numY)
-							&& temp == board[x - numX][y]
-							&& temp == board[x][y + numY]) {
+					while (inBounds(x - numX, y) && inBounds(x, y + numY)) {
 
-						if (inBounds(x - numX, y) && temp == board[x - numX][y]) {
-							numX++;
-						}
-						if (inBounds(x, y + numY) && temp == board[x][y + numY]) {
-							numY++;
+						if (temp == board[x - numX][y]
+								|| temp == board[x][y + numX]) {
+
+							if (temp == board[x - numX][y]) {
+								numX++;
+							}
+							if (temp == board[x][y + numY]) {
+								numY++;
+							}
+						} else {
+							break;
 						}
 					}
 
 				} else if (down && left) {
 
-					while (inBounds(x + numX, y) && inBounds(x, y - numY)
-							&& temp == board[x + numX][y]
-							&& temp == board[x][y - numY]) {
+					while (inBounds(x + numX, y) && inBounds(x, y - numY)) {
 
-						if (inBounds(x + numX, y) && temp == board[x + numX][y]) {
-							numX++;
-						}
-						if (inBounds(x, y - numY) && temp == board[x][y - numY]) {
-							numY++;
+						if (temp == board[x + numX][y]
+								|| temp == board[x][y - numX]) {
+
+							if (temp == board[x + numX][y]) {
+								numX++;
+							}
+							if (temp == board[x][y - numY]) {
+								numY++;
+							}
+						} else {
+							break;
 						}
 					}
-
 				} else if (down && right) {
 
-					while (inBounds(x + numX, y) && inBounds(x, y + numY)
-							&& temp == board[x + numX][y]
-							&& temp == board[x][y + numY]) {
+					while (inBounds(x + numX, y) && inBounds(x, y + numY)) {
 
-						if (inBounds(x + numX, y) && temp == board[x + numX][y]) {
-							numX++;
-						}
-						if (inBounds(x, y + numY) && temp == board[x][y + numY]) {
-							numY++;
+						if (temp == board[x + numX][y]
+								|| temp == board[x][y + numX]) {
+
+							if (temp == board[x + numX][y]) {
+								numX++;
+							}
+							if (temp == board[x][y + numY]) {
+								numY++;
+							}
+						} else {
+							break;
 						}
 					}
-
 				}
 				if (num == (numX + numY) - 1) {
 					L = true;
@@ -2322,18 +2345,14 @@ public class TileGame {
 					} else if (!NE && !NW && SE || SW) {
 						checkT(x + 1, y, num);
 					} else {
-						while (inBounds(x - numX, y) && inBounds(x + numY, y)
-								&& temp == board[x - numX][y]
-								&& temp == board[x + numY][y]) {
-
-							if (inBounds(x - numX, y)
-									&& temp == board[x - numX][y]) {
+						while (inBounds(x - numX, y) && inBounds(x + numY, y)) {
+							if (temp == board[x - numX][y]) {
 								numX++;
 							}
-							if (inBounds(x + numY, y)
-									&& temp == board[x + numY][y]) {
+							if (temp == board[x + numY][y]) {
 								numY++;
 							}
+							System.out.println("Check T");
 						}
 					}
 					if (inBounds(x - numX, y + 1)
@@ -2357,18 +2376,15 @@ public class TileGame {
 					} else if (!NE && !SE && NW || SW) {
 						checkT(x, y - 1, num);
 					} else {
-						while (inBounds(x, y - numX) && inBounds(x, y + numY)
-								&& temp == board[x][y - numX]
-								&& temp == board[x][y + numY]) {
+						while (inBounds(x, y - numX) && inBounds(x, y + numY)) {
 
-							if (inBounds(x, y - numX)
-									&& temp == board[x][y - numX]) {
+							if (temp == board[x][y - numX]) {
 								numX++;
 							}
-							if (inBounds(x, y + numY)
-									&& temp == board[x][y + numY]) {
+							if (temp == board[x][y + numY]) {
 								numY++;
 							}
+							System.out.println("Check T");
 						}
 
 					}
@@ -2391,14 +2407,12 @@ public class TileGame {
 
 				if (!up && down && left && right) {
 
-					while (inBounds(x, y - numX) && inBounds(x, y + numY)
-							&& temp == board[x][y - numX]
-							&& temp == board[x][y + numY]) {
+					while (inBounds(x, y - numX) && inBounds(x, y + numY)) {
 
-						if (inBounds(x, y - numX) && temp == board[x][y - numX]) {
+						if (temp == board[x][y - numX]) {
 							numX++;
 						}
-						if (inBounds(x, y + numY) && temp == board[x][y + numY]) {
+						if (temp == board[x][y + numY]) {
 							numY++;
 						}
 					}
@@ -2408,14 +2422,12 @@ public class TileGame {
 
 				} else if (up && !down && left && right) {
 
-					while (inBounds(x, y - numX) && inBounds(x, y + numY)
-							&& temp == board[x][y - numX]
-							&& temp == board[x][y + numY]) {
+					while (inBounds(x, y - numX) && inBounds(x, y + numY)) {
 
-						if (inBounds(x, y - numX) && temp == board[x][y - numX]) {
+						if (temp == board[x][y - numX]) {
 							numX++;
 						}
-						if (inBounds(x, y + numY) && temp == board[x][y + numY]) {
+						if (temp == board[x][y + numY]) {
 							numY++;
 						}
 					}
@@ -2425,14 +2437,12 @@ public class TileGame {
 
 				} else if (up && down && !left && right) {
 
-					while (inBounds(x - numX, y) && inBounds(x + numY, y)
-							&& temp == board[x - numX][y]
-							&& temp == board[x + numY][y]) {
+					while (inBounds(x - numX, y) && inBounds(x + numY, y)) {
 
-						if (inBounds(x - numX, y) && temp == board[x - numX][y]) {
+						if (temp == board[x - numX][y]) {
 							numX++;
 						}
-						if (inBounds(x + numY, y) && temp == board[x + numY][y]) {
+						if (temp == board[x + numY][y]) {
 							numY++;
 						}
 					}
@@ -2442,14 +2452,12 @@ public class TileGame {
 
 				} else if (up && down && left && !right) {
 
-					while (inBounds(x - numX, y) && inBounds(x + numY, y)
-							&& temp == board[x - numX][y]
-							&& temp == board[x + numY][y]) {
+					while (inBounds(x - numX, y) && inBounds(x + numY, y)) {
 
-						if (inBounds(x - numX, y) && temp == board[x - numX][y]) {
+						if (temp == board[x - numX][y]) {
 							numX++;
 						}
-						if (inBounds(x + numY, y) && temp == board[x + numY][y]) {
+						if (temp == board[x + numY][y]) {
 							numY++;
 						}
 					}

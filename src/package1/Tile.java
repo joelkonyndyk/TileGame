@@ -139,6 +139,14 @@ public class Tile extends GameObject implements EntityA {
 		return new Rectangle((int) y, (int) x, 32, 32);
 	}
 
+	public BufferedImage getImage() {
+		return tile;
+	}
+
+	public void setImage(BufferedImage b) {
+		tile = b;
+	}
+
 	public double getX() {
 		return x;
 	}

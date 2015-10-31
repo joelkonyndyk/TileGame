@@ -83,6 +83,8 @@ public class MouseInput implements MouseListener, MouseMotionListener {
 		int my = e.getY();
 
 		Point p = new Point(mx, my);
+		
+		gamePanel.mouseClicked(p);
 
 		if (game.State == GameState.GAME) {
 
@@ -151,6 +153,8 @@ public class MouseInput implements MouseListener, MouseMotionListener {
 					}
 					// gamePanel.boardCleared();
 				}
+				
+				
 
 				// gamePanel.boardCleared();
 
@@ -205,17 +209,31 @@ public class MouseInput implements MouseListener, MouseMotionListener {
 					}
 				}
 			}
-
-			for (int x = 0; x < BDHEIGHT; x++) {
-				for (int y = 0; y < BDWIDTH; y++) {
-					if (gamePanel.getTile(x, y).getBounds()
-							.contains(e.getPoint())) {
-						gamePanel.setActualClickPoint(new Point(mx, my));
-						gamePanel.pointClicked(new Point(x, y));
-						gamePanel.boardCleared();
-						gamePanel.checkMoveCount();
-					} else {
-						gamePanel.pointClicked(null);
+			
+			if (gamePanel.EditingBoard()){
+				for (int x = 0; x < BDHEIGHT; x++) {
+					for (int y = 0; y < BDWIDTH; y++) {
+						if (gamePanel.getTile(x, y).getBounds()
+								.contains(e.getPoint())) {					
+							gamePanel.setBoardVal(x, y);							
+						} else {
+							gamePanel.pointClicked(null);
+						}
+					}
+				}
+			} else{
+				for (int x = 0; x < BDHEIGHT; x++) {
+					for (int y = 0; y < BDWIDTH; y++) {
+						if (gamePanel.getTile(x, y).getBounds()
+								.contains(e.getPoint())) {
+							gamePanel.setActualClickPoint(new Point(mx, my));
+							gamePanel.pointClicked(new Point(x, y));
+//							gamePanel.DropTiles();
+							gamePanel.boardCleared();
+							gamePanel.checkMoveCount();
+						} else {
+							gamePanel.pointClicked(null);
+						}
 					}
 				}
 			}

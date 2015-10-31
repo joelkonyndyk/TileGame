@@ -2,6 +2,10 @@
 Game Notes / Ideas:
 //***********************
 
+[] L not working correctly , Classic: only occurring when tile pressed is the second from the bottom
+
+[] points not displaying 100% of the time, on Critical Mass
+
 [] Stop shape string from displaying when the board is cleared
 
 [] on board clear, either fill board or initiate game over

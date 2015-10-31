@@ -56,6 +56,9 @@ public class GamePanel extends JPanel {
 	private int BDWIDTH;
 	private int BDHEIGHT;
 
+	private Point pointClicked;
+	private boolean mouseClicked = false;
+
 	private Point clickPoint;
 
 	private Point actualClickPoint;
@@ -232,6 +235,12 @@ public class GamePanel extends JPanel {
 	private StopWatch mouseTimer;
 	private StopWatch directionTimer;
 
+	// Edit Game Variables
+	private boolean editGame = false;
+	private Tile[] editRow;
+	private Tile currTile;
+	private int editTileVal = 0;
+
 	public GamePanel(Textures tex, Game game, Controller c) {
 
 		this.tex = tex;
@@ -250,6 +259,7 @@ public class GamePanel extends JPanel {
 		prevBoard = new int[BDHEIGHT][BDWIDTH];
 		tiles = new Tile[BDHEIGHT][BDWIDTH];
 		tileRow = new Tile[BDWIDTH];
+		editRow = new Tile[5];
 
 		tempBoard = new int[BDHEIGHT][BDWIDTH];
 
@@ -367,6 +377,18 @@ public class GamePanel extends JPanel {
 			}
 		}
 		updateTileRow();
+
+		// initializes the edit row of tiles
+		for (int i = 0; i < 5; i++) {
+			if (i == 0) {
+				editRow[i] = new Tile(85, (i * tilesize) + 300, 7, 1, tex,
+						game, c);
+				currTile = new Tile(10, 575, 7, 1, tex, game, c);
+			} else {
+				editRow[i] = new Tile(85, (i * tilesize) + 300, i, 1, tex,
+						game, c);
+			}
+		}
 
 		upRectangle = new Rectangle(game.getWidth() - 120, 65 - 32, 32, 32);
 		downRectangle = new Rectangle(game.getWidth() - 120, 65 + 32, 32, 32);
@@ -745,12 +767,39 @@ public class GamePanel extends JPanel {
 			displayCritMass(g2d);
 			checkCriticalMass(g2d);
 		}
+
+		if (editGame) {
+
+			DrawOutline("EDIT GAME", 325, 70, g2d);
+
+			for (int i = 0; i < 5; i++) {
+				editRow[i].render(g2d);
+			}
+			currTile.render(g2d);
+
+		}
+
 		c.render(g);
 		// c.render(g2d);
 
 	}
 
 	public void tick() {
+
+		if (mouseClicked) {
+
+			if (editGame) {
+
+				for (int i = 0; i < 5; i++) {
+					if (editRow[i].getBounds().contains(pointClicked)) {
+						currTile.setImage(editRow[i].getImage());
+						editTileVal = i;
+					}
+				}
+			}
+
+			mouseClicked = false;
+		}
 
 		if (!getUndoList().isEmpty()) {
 			setDisplayUndoButton(true);
@@ -901,6 +950,10 @@ public class GamePanel extends JPanel {
 				tempBoard[x][y] = tileGame.getBoardVal(x, y);
 			}
 		}
+	}
+
+	public void DropTGTiles() {
+		tileGame.DropTiles();
 	}
 
 	public void DropTiles() {
@@ -1217,6 +1270,19 @@ public class GamePanel extends JPanel {
 		}
 	}
 
+	public void setBoardVal(int x, int y) {
+		tileGame.setBoardVal(x, y, editTileVal);
+	}
+
+	public boolean EditingBoard() {
+		return editGame;
+	}
+
+	public void mouseClicked(Point p) {
+		mouseClicked = true;
+		pointClicked = p;
+	}
+
 	public boolean isDisplayClearBoard() {
 		return tileGame.isDisplayClearBoard();
 	}
@@ -1500,6 +1566,10 @@ public class GamePanel extends JPanel {
 
 	public Rectangle getGameRect() {
 		return gameRect;
+	}
+
+	public void setEditGame(boolean b) {
+		editGame = b;
 	}
 
 	public int getGameMode() {

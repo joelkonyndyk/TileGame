@@ -62,6 +62,7 @@ public class Game extends Canvas implements Runnable, WindowListener {
 	public static GameState State = GameState.LOAD;
 
 	private boolean displayStats = false;
+	private boolean editGame = false;
 
 	private int updates;
 	private int frames;
@@ -249,8 +250,18 @@ public class Game extends Canvas implements Runnable, WindowListener {
 			}
 		}
 
-		// if (State == GameState.GAME) {
-		// }
+		// sets the game mode to Edit mode
+		if (gamePanel.getGameMode() == 1 && State == GameState.GAME) {
+			if (key == KeyEvent.VK_BACK_QUOTE) {
+				if (editGame) {
+					editGame = false;
+					gamePanel.DropTGTiles();
+				} else {
+					editGame = true;
+				}
+				gamePanel.setEditGame(editGame);
+			}
+		}
 	}
 
 	public void keyReleased(KeyEvent e) {
