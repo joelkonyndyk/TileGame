@@ -2,6 +2,8 @@
 Game Notes / Ideas:
 //***********************
 
+[] Add a Power-up label above the in game power-ups
+
 [] on board clear, either fill board or initiate game over
 
 [] add text if break score is over a certain amount
@@ -46,6 +48,8 @@ Game Notes / Ideas:
 COMPLETED!
 //****************************************************************************************
 2-15-16
+[+] Crit Mass: when undo makes percentage dip below power-up threshold the button should become disabled
+[+] Gravity: Board should update when the arrow buttons are tapped
 [+] Drop row is not dropping when it should be
 [+] Drop row being reset after hitting the undo button
 2-06-16

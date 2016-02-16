@@ -470,9 +470,11 @@ public class GamePanel extends JPanel {
 		g2d.setFont(fnt0);
 		g2d.setColor(Color.WHITE);
 
-		DrawOutline("Move Count: " + tileGame.getMoveCount(), 500, 85, g2d);
-		DrawOutline("Display Row: " + tileGame.getDisplayRow(), 500, 100, g2d);
-		DrawOutline("Drop Row: " + tileGame.getDropRow(), 500, 115, g2d);
+		/** Enable these to display variables in game for debugging purposes **/
+		// DrawOutline("Move Count: " + tileGame.getMoveCount(), 500, 85, g2d);
+		// DrawOutline("Display Row: " + tileGame.getDisplayRow(), 500, 100,
+		// g2d);
+		// DrawOutline("Drop Row: " + tileGame.getDropRow(), 500, 115, g2d);
 
 		if (tileGame.getGameMode() == 1) {
 			gmStr = "Game Mode: Classic";
@@ -886,6 +888,8 @@ public class GamePanel extends JPanel {
 
 	public void setDirection(int i) {
 		tileGame.setDirection(i);
+		// DropTiles();
+		// UpdateBoard();
 	}
 
 	public void pointClicked(Point p) {
@@ -1141,6 +1145,8 @@ public class GamePanel extends JPanel {
 
 		tileGame.CriticalMass();
 
+		int count = 0;
+
 		Stack<String> CMPercentages = tileGame.getCritMassPercentages();
 		String temp = "";
 
@@ -1159,8 +1165,15 @@ public class GamePanel extends JPanel {
 			DrawOutline(str[3] + "%", x, y + 16, g2d);
 
 			if (Integer.parseInt(str[3]) > 50) {
-				showBreakCM = true;
+				count++;
+				// showBreakCM = true;
 			}
+		}
+
+		if (count > 0) {
+			showBreakCM = true;
+		} else {
+			showBreakCM = false;
 		}
 
 	}

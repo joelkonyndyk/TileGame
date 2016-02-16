@@ -2791,14 +2791,13 @@ public class TileGame {
 		percentage = ((float) count / (float) ((BDHEIGHT * BDWIDTH) - solidCount));
 		return percentage;
 	}
-	
-	public void checkCreateRow(){
+
+	public void checkCreateRow() {
 		if (moveCount == rowDisplayCount - 1) {
 			createRow();
-//			rowCreated = true;
+			// rowCreated = true;
 		}
 
-		
 	}
 
 	public void checkMoveCount() {
@@ -2806,25 +2805,22 @@ public class TileGame {
 		// rowDisplayCount = 15;
 		// rowDropCount = 25;
 		// boolean rowCreated
-		
-//		if (moveCount == rowDisplayCount && !rowCreated) {
-//			createRow();
-////			rowCreated = true;
-//		}
-//
-//		if (moveCount >= 0 && moveCount < rowDisplayCount) {
-//			// createRow();
-//			rowCreated = false;
-//		} else {
-//			rowCreated = true;
-//		}
 
-		
-			
+		// if (moveCount == rowDisplayCount && !rowCreated) {
+		// createRow();
+		// // rowCreated = true;
+		// }
+		//
+		// if (moveCount >= 0 && moveCount < rowDisplayCount) {
+		// // createRow();
+		// rowCreated = false;
+		// } else {
+		// rowCreated = true;
+		// }
 
-//		if (moveCount == rowDisplayCount - 1) {
-//			createRow();			
-//		}
+		// if (moveCount == rowDisplayCount - 1) {
+		// createRow();
+		// }
 
 		if (tilesRemaining() > .65) {
 			moveCount = 0;
@@ -3975,8 +3971,9 @@ public class TileGame {
 		return direction;
 	}
 
-	public static void setDirection(int direction) {
+	public void setDirection(int direction) {
 		TileGame.direction = direction;
+		DropTiles();
 	}
 
 	public int getScore() {

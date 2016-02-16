@@ -179,6 +179,7 @@ public class MouseInput implements MouseListener, MouseMotionListener {
 						gamePanel.removeLargestCritMass();
 						gamePanel.displayBPointUse(100);
 						gamePanel.setShowBreakCM(false);
+						gamePanel.DropTGTiles();
 					}
 				}
 			}
