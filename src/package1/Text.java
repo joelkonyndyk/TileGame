@@ -19,6 +19,8 @@ public class Text implements EntityB {
 	public double x;
 	public double y;
 
+	private int delay = 0;
+
 	private Font fnt0 = new Font("arial", Font.BOLD, 20);
 	// private int fntSize = 20;
 
@@ -30,34 +32,38 @@ public class Text implements EntityB {
 		this.game = game;
 		this.str = str;
 		this.cont = cont;
-
 		this.x = x;
 		this.y = y;
 
-		// fnt0 = new Font("arial", Font.BOLD, fntSize);
+		c = AlphaComposite.getInstance(AlphaComposite.SRC_OVER, transparency);
+	}
+
+	public Text(String str, Game game, Controller cont, double x, double y,
+			int delay) {
+
+		this.game = game;
+		this.str = str;
+		this.cont = cont;
+		this.delay = delay;
+		this.x = x;
+		this.y = y;
 
 		c = AlphaComposite.getInstance(AlphaComposite.SRC_OVER, transparency);
-
 	}
 
 	public void tick() {
-
 		y -= speed;
-		// fntSize++;
 
-		// transparency -= .1f;
-
-		if (transparency > 0.1f) {
-			c = AlphaComposite.getInstance(AlphaComposite.SRC_OVER,
-					transparency -= .035f);
+		if (delay > 0) {
+			delay--;
 		} else {
-			cont.removeEntity(this);
+			if (transparency > 0.1f) {
+				c = AlphaComposite.getInstance(AlphaComposite.SRC_OVER,
+						transparency -= .06f);
+			} else {
+				cont.removeEntity(this);
+			}
 		}
-
-		// if (fntSize > 30) {
-		// cont.removeEntity(this);
-		// }
-		// fnt0.deriveFont(fntSize);
 	}
 
 	public void render(Graphics g) {

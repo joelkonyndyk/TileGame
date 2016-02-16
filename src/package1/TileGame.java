@@ -31,6 +31,8 @@ public class TileGame {
 	private int[] boardRow;
 	private int[] prevBoardRow;
 
+	private boolean rowCreated = false;
+
 	/** This represents the board height and length of the current game */
 	private int BDSIZE;
 
@@ -98,6 +100,7 @@ public class TileGame {
 	private final float showCMSize = (float) .05;
 
 	private final int rowDisplayCount = 15;
+	private final int rowDropCount = 25;
 
 	private boolean highScore = false;
 
@@ -172,6 +175,7 @@ public class TileGame {
 		boardRow = new int[BDWIDTH];
 		prevBoardRow = new int[BDWIDTH];
 		createBoard();
+		createRow();
 	}
 
 	public TileGame(int boardSize, int gamemode) {
@@ -249,7 +253,10 @@ public class TileGame {
 		for (int i = 0; i < BDWIDTH; i++) {
 			boardRow[i] = generateRandom();
 			prevBoardRow[i] = 0;
+			prevBoardRow[i] = boardRow[i];
 		}
+
+		// rowCreated = true;
 	}
 
 	public int CheckBoard(Point p) {
@@ -730,45 +737,22 @@ public class TileGame {
 
 				if (up && down) {
 
-					while (inBounds(x - numX, y) && inBounds(x + numY, y)) {
+					while (inBounds(x - numX, y) && temp == board[x - numX][y]) {
+						numX++;
+					}
 
-						if (temp == board[x - numX][y]
-								|| temp == board[x + numY][y]) {
-
-							if (temp == board[x - numX][y]) {
-								numX++;
-							}
-							if (temp == board[x + numY][y]) {
-								numY++;
-							}
-						} else {
-							break;
-						}
+					while (inBounds(x + numY, y) && temp == board[x + numY][y]) {
+						numY++;
 					}
 
 				} else if (left && right) {
 
-					while (inBounds(x, y - numX) || inBounds(x, y + numY)) {
+					while (inBounds(x, y - numX) && temp == board[x][y - numX]) {
+						numX++;
+					}
 
-						if (temp == board[x][y + numY]) {
-							numY++;
-						}
-						if (temp == board[x][y - numX]) {
-							numX++;
-						}
-
-						// if (temp == board[x][y + numY]
-						// || temp == board[x][y - numX]) {
-						//
-						// if (temp == board[x][y + numY]) {
-						// numY++;
-						// }
-						// if (temp == board[x][y - numX]) {
-						// numX++;
-						// }
-						// } else {
-						// break;
-						// }
+					while (inBounds(x, y + numY) && temp == board[x][y + numY]) {
+						numY++;
 					}
 				}
 
@@ -2070,20 +2054,12 @@ public class TileGame {
 
 				if (up && down) {
 
-					while (inBounds(x - numX, y) && inBounds(x + numY, y)) {
+					while (inBounds(x - numX, y) && temp == board[x - numX][y]) {
+						numX++;
+					}
 
-						if (temp == board[x - numX][y]
-								|| temp == board[x + numY][y]) {
-
-							if (temp == board[x - numX][y]) {
-								numX++;
-							}
-							if (temp == board[x + numY][y]) {
-								numY++;
-							}
-						} else {
-							break;
-						}
+					while (inBounds(x + numY, y) && temp == board[x + numY][y]) {
+						numY++;
 					}
 
 					numX -= 1;
@@ -2093,22 +2069,14 @@ public class TileGame {
 
 				} else if (left && right) {
 
-					while (inBounds(x, y - numX) && inBounds(x, y + numY)) {
-
-						if (temp == board[x][y - numX]
-								|| temp == board[x][y + numX]) {
-
-							if (temp == board[x][y - numX]) {
-								numX++;
-							}
-							if (temp == board[x][y + numY]) {
-								numY++;
-							}
-
-						} else {
-							break;
-						}
+					while (inBounds(x, y - numX) && temp == board[x][y - numX]) {
+						numX++;
 					}
+
+					while (inBounds(x, y + numY) && temp == board[x][y + numY]) {
+						numY++;
+					}
+
 					numX -= 1;
 					numY -= 1;
 					checkL(x, y - numX, num);
@@ -2118,15 +2086,13 @@ public class TileGame {
 
 					while (inBounds(x - numX, y) && inBounds(x, y - numY)) {
 
-						if (temp == board[x - numX][y]
-								|| temp == board[x][y - numX]) {
-
-							if (temp == board[x - numX][y]) {
-								numX++;
-							}
-							if (temp == board[x][y - numY]) {
-								numY++;
-							}
+						if (temp == board[x - numX][y]) {
+							numX++;
+						} else {
+							break;
+						}
+						if (temp == board[x][y - numY]) {
+							numY++;
 						} else {
 							break;
 						}
@@ -2136,15 +2102,13 @@ public class TileGame {
 
 					while (inBounds(x - numX, y) && inBounds(x, y + numY)) {
 
-						if (temp == board[x - numX][y]
-								|| temp == board[x][y + numX]) {
-
-							if (temp == board[x - numX][y]) {
-								numX++;
-							}
-							if (temp == board[x][y + numY]) {
-								numY++;
-							}
+						if (temp == board[x - numX][y]) {
+							numX++;
+						} else {
+							break;
+						}
+						if (temp == board[x][y + numY]) {
+							numY++;
 						} else {
 							break;
 						}
@@ -2154,15 +2118,13 @@ public class TileGame {
 
 					while (inBounds(x + numX, y) && inBounds(x, y - numY)) {
 
-						if (temp == board[x + numX][y]
-								|| temp == board[x][y - numX]) {
-
-							if (temp == board[x + numX][y]) {
-								numX++;
-							}
-							if (temp == board[x][y - numY]) {
-								numY++;
-							}
+						if (temp == board[x + numX][y]) {
+							numX++;
+						} else {
+							break;
+						}
+						if (temp == board[x][y - numY]) {
+							numY++;
 						} else {
 							break;
 						}
@@ -2171,15 +2133,13 @@ public class TileGame {
 
 					while (inBounds(x + numX, y) && inBounds(x, y + numY)) {
 
-						if (temp == board[x + numX][y]
-								|| temp == board[x][y + numX]) {
-
-							if (temp == board[x + numX][y]) {
-								numX++;
-							}
-							if (temp == board[x][y + numY]) {
-								numY++;
-							}
+						if (temp == board[x + numX][y]) {
+							numX++;
+						} else {
+							break;
+						}
+						if (temp == board[x][y + numY]) {
+							numY++;
 						} else {
 							break;
 						}
@@ -2348,11 +2308,14 @@ public class TileGame {
 						while (inBounds(x - numX, y) && inBounds(x + numY, y)) {
 							if (temp == board[x - numX][y]) {
 								numX++;
+							} else {
+								break;
 							}
 							if (temp == board[x + numY][y]) {
 								numY++;
+							} else {
+								break;
 							}
-							System.out.println("Check T");
 						}
 					}
 					if (inBounds(x - numX, y + 1)
@@ -2380,11 +2343,14 @@ public class TileGame {
 
 							if (temp == board[x][y - numX]) {
 								numX++;
+							} else {
+								break;
 							}
 							if (temp == board[x][y + numY]) {
 								numY++;
+							} else {
+								break;
 							}
-							System.out.println("Check T");
 						}
 
 					}
@@ -2411,9 +2377,13 @@ public class TileGame {
 
 						if (temp == board[x][y - numX]) {
 							numX++;
+						} else {
+							break;
 						}
 						if (temp == board[x][y + numY]) {
 							numY++;
+						} else {
+							break;
 						}
 					}
 					while (inBounds(x + numZ, y) && temp == board[x + numZ][y]) {
@@ -2426,9 +2396,13 @@ public class TileGame {
 
 						if (temp == board[x][y - numX]) {
 							numX++;
+						} else {
+							break;
 						}
 						if (temp == board[x][y + numY]) {
 							numY++;
+						} else {
+							break;
 						}
 					}
 					while (inBounds(x - numZ, y) && temp == board[x - numZ][y]) {
@@ -2441,9 +2415,13 @@ public class TileGame {
 
 						if (temp == board[x - numX][y]) {
 							numX++;
+						} else {
+							break;
 						}
 						if (temp == board[x + numY][y]) {
 							numY++;
+						} else {
+							break;
 						}
 					}
 					while (inBounds(x, y + numZ) && temp == board[x][y + numZ]) {
@@ -2456,9 +2434,13 @@ public class TileGame {
 
 						if (temp == board[x - numX][y]) {
 							numX++;
+						} else {
+							break;
 						}
 						if (temp == board[x + numY][y]) {
 							numY++;
+						} else {
+							break;
 						}
 					}
 					while (inBounds(x, y - numZ) && temp == board[x][y - numZ]) {
@@ -2526,7 +2508,7 @@ public class TileGame {
 		prevScore = score;
 		prevBonusPoints = bonusPoints;
 
-		if (str == null) {
+		if (str == "") {
 			combo = 0;
 
 			// if(boardCleared){
@@ -2565,12 +2547,10 @@ public class TileGame {
 			comboStr = "";
 		}
 
-		// boardCleared();
-		if (tilesLeft() == s) {
-			// System.out.println("True");
-			scoreStr = "";
-			bonusPtStr = "";
-			comboStr = "";
+		if (tileTypeCount() == 0) {
+			// scoreStr = "";
+			// bonusPtStr = "";
+			// comboStr = "";
 			score += 1000;
 			bonusPoints += 100;
 		}
@@ -2595,6 +2575,30 @@ public class TileGame {
 
 	public void SubtractBonusPoints(int num) {
 		bonusPoints -= num;
+	}
+
+	public int tileTypeCount() {
+		int temp = 0;
+		int one = 0;
+		int two = 0;
+		int three = 0;
+		int four = 0;
+
+		for (int x = 0; x < BDHEIGHT; x++) {
+			for (int y = 0; y < BDWIDTH; y++) {
+				if (board[x][y] == 1) {
+					one = 1;
+				} else if (board[x][y] == 2) {
+					two = 1;
+				} else if (board[x][y] == 3) {
+					three = 1;
+				} else if (board[x][y] == 4) {
+					four = 1;
+				}
+			}
+		}
+		temp = (one + two + three + four);
+		return temp;
 	}
 
 	public int CheckZeros() {
@@ -2787,32 +2791,94 @@ public class TileGame {
 		percentage = ((float) count / (float) ((BDHEIGHT * BDWIDTH) - solidCount));
 		return percentage;
 	}
+	
+	public void checkCreateRow(){
+		if (moveCount == rowDisplayCount - 1) {
+			createRow();
+//			rowCreated = true;
+		}
+
+		
+	}
 
 	public void checkMoveCount() {
+
+		// rowDisplayCount = 15;
+		// rowDropCount = 25;
+		// boolean rowCreated
+		
+//		if (moveCount == rowDisplayCount && !rowCreated) {
+//			createRow();
+////			rowCreated = true;
+//		}
+//
+//		if (moveCount >= 0 && moveCount < rowDisplayCount) {
+//			// createRow();
+//			rowCreated = false;
+//		} else {
+//			rowCreated = true;
+//		}
+
+		
+			
+
+//		if (moveCount == rowDisplayCount - 1) {
+//			createRow();			
+//		}
 
 		if (tilesRemaining() > .65) {
 			moveCount = 0;
 			// System.out.println(tilesRemaining());
 		}
 
+		if (moveCount == rowDropCount) {
+			dropRow = true;
+		}
+
 		// System.out.println(tilesRemaining());
 		// && tilesRemaining() < .50
 
-		if (moveCount > rowDisplayCount - 1) {
-			if (!displayRow) {
-				// moveCount = rowDisplayCount;
-			}
+		// if (moveCount >= rowDisplayCount) {
+		if (moveCount >= rowDisplayCount && moveCount < rowDropCount) {
 			displayRow = true;
-		} else {
-			displayRow = false;
-			dropRow = false;
 		}
 
-		if (moveCount == rowDisplayCount && rowEmpty()) {
-			createRow();
-		} else if (moveCount >= rowDisplayCount + 10) {
-			dropRow = true;
+		if (moveCount >= rowDropCount && !dropRow) {
+			displayRow = false;
+			moveCount = 0;
 		}
+
+		if (moveCount < rowDisplayCount) {
+			displayRow = false;
+		}
+
+		// else if (moveCount < rowDisplayCount) {
+		// displayRow = false;
+		// // dropRow = false;
+		// }
+
+		// if (moveCount >= rowDisplayCount && !rowCreated && rowEmpty()) {
+		// createRow();
+		// }
+		// else if (moveCount == rowDropCount) {
+		// dropRow = true;
+		// }
+
+		// if (moveCount >= rowDisplayCount) {
+		// if (!displayRow) {
+		// // moveCount = rowDisplayCount;
+		// }
+		// displayRow = true;
+		// } else {
+		// displayRow = false;
+		// dropRow = false;
+		// }
+		//
+		// if (moveCount == rowDisplayCount && rowEmpty()) {
+		// createRow();
+		// } else if (moveCount >= rowDisplayCount + 10) {
+		// dropRow = true;
+		// }
 
 	}
 
@@ -3779,7 +3845,7 @@ public class TileGame {
 			moveCount--;
 		} else if (moveCount == 0) {
 			// moveCount = prevMoveCount;
-			moveCount = rowDisplayCount + 9;
+			moveCount = rowDropCount - 1;
 		}
 	}
 

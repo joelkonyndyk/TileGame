@@ -182,6 +182,9 @@ public class GamePanel extends JPanel {
 
 	private int moveCount = 0;
 
+	private final int delaySml = 10;
+	private final int delayLrg = 25;
+
 	private Rectangle swapRectangle;
 	private Rectangle dropRectangle;
 	private Rectangle fillboardRectangle;
@@ -446,13 +449,15 @@ public class GamePanel extends JPanel {
 			}
 
 		}
+		// Sets the top row to display faded
 		g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER,
-				0.8f));
+				0.7f));
 
 		// draws the top row that is about to drop
 		if (tileGame.getGameMode() == classic && tileGame.getDisplayRow()) {
-			updateTileRow();
+			// updateTileRow();
 			for (int i = 0; i < BDWIDTH; i++) {
+				// tileRow[i].render(g2d);
 				if (tileGame.getBoardRowVal(i) != 0) {
 					tileRow[i].render(g2d);
 				}
@@ -464,6 +469,10 @@ public class GamePanel extends JPanel {
 		Font fnt0 = new Font("arial", Font.BOLD, 16);
 		g2d.setFont(fnt0);
 		g2d.setColor(Color.WHITE);
+
+		DrawOutline("Move Count: " + tileGame.getMoveCount(), 500, 85, g2d);
+		DrawOutline("Display Row: " + tileGame.getDisplayRow(), 500, 100, g2d);
+		DrawOutline("Drop Row: " + tileGame.getDropRow(), 500, 115, g2d);
 
 		if (tileGame.getGameMode() == 1) {
 			gmStr = "Game Mode: Classic";
@@ -827,13 +836,13 @@ public class GamePanel extends JPanel {
 
 		if (tileGame.getGameMode() == classic && tileGame.getDisplayRow()) {
 			for (int i = 0; i < BDWIDTH; i++) {
-				tileRow[i].tick();
+				// tileRow[i].tick();
 			}
 		}
 
 		for (int x = 0; x < BDHEIGHT; x++) {
 			for (int y = 0; y < BDWIDTH; y++) {
-				tiles[x][y].tick();
+				// tiles[x][y].tick();
 			}
 		}
 
@@ -957,11 +966,13 @@ public class GamePanel extends JPanel {
 	}
 
 	public void DropTiles() {
-
-		// int clickPt = 0;
+		String shapeStr = "";
+		String shape = "";
+		int count;
+		int tileVal;
 
 		if (clickPoint != null && !tileGame.CheckSingle(clickPoint)) {
-			int count;
+			tileVal = tileGame.getBoardVal(clickPoint.x, clickPoint.y);
 
 			if (actualClickPoint.x > game.getWidth() - 175) {
 				clickPt = game.getWidth() - 175;
@@ -969,111 +980,88 @@ public class GamePanel extends JPanel {
 				clickPt = actualClickPoint.x;
 			}
 
-			if (tileGame.getBoardVal(clickPoint.x, clickPoint.y) != 5) {
+			if (tileVal != 5) {
 				tileGame.addMoveCount();
 				copyBoard();
 				tileGame.addUndo();
 			}
 			tileGame.checkShapes(clickPoint);
+			count = tileGame.CheckBoard(clickPoint);
 
-			if (tileGame.getBoardVal(clickPoint.x, clickPoint.y) != 5) {
-				count = tileGame.countTiles(clickPoint);
+			if (tileVal != 5) {
 				if (tileGame.isSquare()) {
-					c.addEntity(new Text("Square!", game, c, clickPt,
-							actualClickPoint.y - 50));
-					// System.out.println("Square!");
-					tileGame.CalculateScore(count, "square");
+					shapeStr = "Square!";
+					shape = "square";
 					tileGame.setSquare(false);
 				} else if (tileGame.isLine()) {
-					c.addEntity(new Text("Line!", game, c, clickPt,
-							actualClickPoint.y - 50));
-					// System.out.println("Line!");
-					tileGame.CalculateScore(count, "line");
+					shapeStr = "Line!";
+					shape = "line";
 					tileGame.setLine(false);
 				} else if (tileGame.isCorner()) {
-					c.addEntity(new Text("Corner!", game, c, clickPt,
-							actualClickPoint.y - 50));
-					// System.out.println("Corner!");
-					tileGame.CalculateScore(count, "corner");
+					shapeStr = "Corner!";
+					shape = "corner";
 					tileGame.setCorner(false);
 				} else if (tileGame.isStairs()) {
-					c.addEntity(new Text("Stairs!", game, c, clickPt,
-							actualClickPoint.y - 50));
-					// System.out.println("Stairs!");
-					tileGame.CalculateScore(count, "stairs");
+					shapeStr = "Stairs!";
+					shape = "stairs";
 					tileGame.setStairs(false);
 				} else if (tileGame.isCross()) {
-					c.addEntity(new Text("Cross!", game, c, clickPt,
-							actualClickPoint.y - 50));
-					// System.out.println("Cross!");
-					tileGame.CalculateScore(count, "cross");
+					shapeStr = "Cross!";
+					shape = "cross";
 					tileGame.setCross(false);
 				} else if (tileGame.isL()) {
-					c.addEntity(new Text("Awesome L!", game, c, clickPt,
-							actualClickPoint.y - 50));
-					// System.out.println("L!");
-					tileGame.CalculateScore(count, "l");
+					shapeStr = "Awesome L!";
+					shape = "l";
 					tileGame.setL(false);
 				} else if (tileGame.isT()) {
-					c.addEntity(new Text("Sweet T!", game, c, clickPt,
-							actualClickPoint.y - 50));
-					// System.out.println("T!");
-					tileGame.CalculateScore(count, "t");
+					shapeStr = "Sweet T!";
+					shape = "t";
 					tileGame.setT(false);
-				} else {
-					tileGame.CalculateScore(count, null);
 				}
-			}
-			count = tileGame.CheckBoard(clickPoint);
-			copyTempBoard();
-			breakTiles();
-			tileGame.DropTiles();
-			// tileGame.boardCleared();
 
-			if (tileGame.getBoardVal(clickPoint.x, clickPoint.y) != 5) {
+				c.addEntity(new Text(shapeStr, game, c, clickPt,
+						actualClickPoint.y - 50, delaySml));
+				tileGame.CalculateScore(count, shape);
 
-				if (tileGame.getComboStr() != "") {
-					c.addEntity(new Text(tileGame.getComboStr(), game, c,
-							clickPt, actualClickPoint.y + 25));
-
-				}
-				if (tileGame.getBonusPtStr() != "") {
-					c.addEntity(new Text(tileGame.getBonusPtStr(), game, c,
-							clickPt, actualClickPoint.y - 25));
-					c.addEntity(new Text(tileGame.getScoreStr(), game, c,
-							clickPt, actualClickPoint.y));
-
-				} else {
-					c.addEntity(new Text(tileGame.getScoreStr(), game, c,
-							actualClickPoint.x, actualClickPoint.y));
-				}
-			}
-		}
-
-		// System.out.println(tileGame.getBoardCleared());
-
-		if (tileGame.GameOver()) {
-			if (tileGame.isDisplayClearBoard()) {
-				if (tileGame.getBoardCleared()) {
-					// displayClearBoard = false;
+				// Draw this text on screen if the board gets cleared
+				if (tileGame.tileTypeCount() == 0) {
 					Text t = new Text("Board Cleared! +1000pts!", game, c,
 							(game.getWidth() / 2) - 200,
-							(game.getHeight() / 2) - 100);
+							(game.getHeight() / 2) - 100, delayLrg);
 					t.setFont(new Font("arial", Font.BOLD, 36));
 					t.setSpeed(2);
 
 					Text t1 = new Text("Bonus Points! +100!", game, c,
 							(game.getWidth() / 2) - 175,
-							(game.getHeight() / 2) - 50);
+							(game.getHeight() / 2) - 50, delayLrg);
 					t1.setFont(new Font("arial", Font.BOLD, 36));
 					t1.setSpeed(2);
 
 					c.addEntity(t);
 					c.addEntity(t1);
+				}
 
-					tileGame.setBoardCleared(false);
-					// displayClearBoard = false;
-					tileGame.setDisplayClearBoard(false);
+			}
+			copyTempBoard();
+			breakTiles();
+			tileGame.DropTiles();
+
+			if (tileVal != 5) {
+
+				if (tileGame.getComboStr() != "") {
+					c.addEntity(new Text(tileGame.getComboStr(), game, c,
+							clickPt, actualClickPoint.y + 25, delaySml));
+
+				}
+				if (tileGame.getBonusPtStr() != "") {
+					c.addEntity(new Text(tileGame.getBonusPtStr(), game, c,
+							clickPt, actualClickPoint.y - 25, delaySml));
+					c.addEntity(new Text(tileGame.getScoreStr(), game, c,
+							clickPt, actualClickPoint.y, delaySml));
+
+				} else {
+					c.addEntity(new Text(tileGame.getScoreStr(), game, c,
+							actualClickPoint.x, actualClickPoint.y, delaySml));
 				}
 			}
 		}
@@ -1092,10 +1080,8 @@ public class GamePanel extends JPanel {
 				if (prevBoard[x][y] != 0 && tileGame.getBoardVal(x, y) == 0) {
 					tiles[x][y].setBreakT(true);
 				}
-
 			}
 		}
-
 	}
 
 	public void displayBPointUse(int num) {
@@ -1104,8 +1090,12 @@ public class GamePanel extends JPanel {
 		String str = "-" + num + " Bonus Points";
 		// shows bonus point update on screen
 		c.addEntity(new Text(str, game, c, (game.getWidth() / 2) - 50, game
-				.getHeight() / 2));
+				.getHeight() / 2, delaySml));
 
+	}
+
+	public void checkCreateRow() {
+		tileGame.checkCreateRow();
 	}
 
 	public void checkCriticalMass(Graphics2D g2d) {
@@ -1128,9 +1118,11 @@ public class GamePanel extends JPanel {
 				int tempScore = count * 25;
 
 				c.addEntity(new Text("CRITICAL MASS!", game, c, Integer
-						.parseInt(str[2]) - 25, Integer.parseInt(str[1])));
+						.parseInt(str[2]) - 25, Integer.parseInt(str[1]),
+						delaySml));
 				c.addEntity(new Text(tempScore + " Points!", game, c, Integer
-						.parseInt(str[2]), Integer.parseInt(str[1]) + 30));
+						.parseInt(str[2]), Integer.parseInt(str[1]) + 30,
+						delaySml));
 				// use below to display info in center of screen
 				// c.addEntity(new Text("CRITICAL MASS!", game, c, (game
 				// .getWidth() / 2) - 25, game.getHeight() / 2));

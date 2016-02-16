@@ -2,12 +2,6 @@
 Game Notes / Ideas:
 //***********************
 
-[] L not working correctly , Classic: only occurring when tile pressed is the second from the bottom
-
-[] points not displaying 100% of the time, on Critical Mass
-
-[] Stop shape string from displaying when the board is cleared
-
 [] on board clear, either fill board or initiate game over
 
 [] add text if break score is over a certain amount
@@ -51,6 +45,13 @@ Game Notes / Ideas:
 //****************************************************************************************
 COMPLETED!
 //****************************************************************************************
+2-15-16
+[+] Drop row is not dropping when it should be
+[+] Drop row being reset after hitting the undo button
+2-06-16
+[+] points not displaying 100% of the time, on Critical Mass
+[+] T not working correctly
+[+] L not working correctly , Classic: only occurring when tile pressed is the second from the bottom
 8-01-15
 [+] fixed multiple issues dealing with fringe shape checking issues
 [+] Added try/catch statements to resolve errors caused by clicking to quickly

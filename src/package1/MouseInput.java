@@ -83,7 +83,7 @@ public class MouseInput implements MouseListener, MouseMotionListener {
 		int my = e.getY();
 
 		Point p = new Point(mx, my);
-		
+
 		gamePanel.mouseClicked(p);
 
 		if (game.State == GameState.GAME) {
@@ -153,8 +153,13 @@ public class MouseInput implements MouseListener, MouseMotionListener {
 					}
 					// gamePanel.boardCleared();
 				}
-				
-				
+
+				// if (gamePanel.getDisplayRow()) {
+				// gamePanel.updateTileRow();
+				// }
+
+				gamePanel.checkCreateRow();
+				gamePanel.updateTileRow();
 
 				// gamePanel.boardCleared();
 
@@ -192,7 +197,7 @@ public class MouseInput implements MouseListener, MouseMotionListener {
 				// undo button
 				if (!gamePanel.getUndoList().isEmpty()) {
 					// gamePanel.setDisplayUndoButton(true);
-//					if (!gamePanel.gameIsOver()) {
+					// if (!gamePanel.gameIsOver()) {
 					if (gamePanel.getTimeLeft() > 0) {
 						if (gamePanel.getUndoRectangle().contains(p)) {
 							if (gamePanel.getGameMode() == 1) {
@@ -205,37 +210,41 @@ public class MouseInput implements MouseListener, MouseMotionListener {
 
 						}
 					} else {
-						
+
 					}
 				}
 			}
-			
-			if (gamePanel.EditingBoard()){
+
+			if (gamePanel.EditingBoard()) {
 				for (int x = 0; x < BDHEIGHT; x++) {
 					for (int y = 0; y < BDWIDTH; y++) {
 						if (gamePanel.getTile(x, y).getBounds()
-								.contains(e.getPoint())) {					
-							gamePanel.setBoardVal(x, y);							
+								.contains(e.getPoint())) {
+							gamePanel.setBoardVal(x, y);
 						} else {
 							gamePanel.pointClicked(null);
 						}
 					}
 				}
-			} else{
+			} else {
+				Point tempPoint = null;
 				for (int x = 0; x < BDHEIGHT; x++) {
 					for (int y = 0; y < BDWIDTH; y++) {
 						if (gamePanel.getTile(x, y).getBounds()
 								.contains(e.getPoint())) {
 							gamePanel.setActualClickPoint(new Point(mx, my));
-							gamePanel.pointClicked(new Point(x, y));
-//							gamePanel.DropTiles();
+							tempPoint = new Point(x, y);
+							// gamePanel.pointClicked(new Point(x, y));
+							// gamePanel.DropTiles();
 							gamePanel.boardCleared();
 							gamePanel.checkMoveCount();
 						} else {
-							gamePanel.pointClicked(null);
+
+							// gamePanel.pointClicked(null);
 						}
 					}
 				}
+				gamePanel.pointClicked(tempPoint);
 			}
 
 			// gamePanel.boardCleared();
@@ -265,7 +274,7 @@ public class MouseInput implements MouseListener, MouseMotionListener {
 				gamePanel.setGameIsOver(false);
 				gamePanel.setGameMode(1);
 				gamePanel.setMoveCount(0);
-//				gamePanel.updateTileRow();
+				// gamePanel.updateTileRow();
 				Game.State = GameState.GAME;
 			}
 
