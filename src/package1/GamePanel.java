@@ -41,6 +41,14 @@ public class GamePanel extends JPanel {
 	private Tile[][] tiles;
 	private Tile[] tileRow;
 
+	/* Animation Variables */
+	private Sprite[][] spriteTiles;
+	private Sprite[] spriteTileRow;
+	private SpriteSheet ss;
+	private AnimationController anim;
+	private boolean isAnimating = false;
+	private final int animSpeed = 2;
+
 	private int[][] prevBoard;
 	private int[][] tempBoard;
 
@@ -209,6 +217,8 @@ public class GamePanel extends JPanel {
 
 	private boolean undoPts = false;
 
+	private boolean displayStats = false;
+
 	private boolean showSwapInfo = false;
 	private boolean showDropRowInfo = false;
 	private boolean showFillBoardInfo = false;
@@ -229,7 +239,7 @@ public class GamePanel extends JPanel {
 
 	private float tempTime = 1.0f;
 
-	Animation anim;
+	// Animation anim;
 
 	private Point mouseLocation;
 
@@ -264,6 +274,11 @@ public class GamePanel extends JPanel {
 		tileRow = new Tile[BDWIDTH];
 		editRow = new Tile[5];
 
+		/* Animation Variables */
+		spriteTiles = new Sprite[BDHEIGHT][BDWIDTH];
+		spriteTileRow = new Sprite[BDWIDTH];
+		anim = new AnimationController();
+
 		tempBoard = new int[BDHEIGHT][BDWIDTH];
 
 		gameRect = new Rectangle(2, 182, 805, 485);
@@ -280,6 +295,8 @@ public class GamePanel extends JPanel {
 	}
 
 	public void init() {
+
+		ss = new SpriteSheet(game.getSpriteSheet());
 
 		// displayClearBoard = true;
 		tileGame.setDisplayClearBoard(true);
@@ -348,11 +365,28 @@ public class GamePanel extends JPanel {
 
 				if (temp == 1) {
 
+					spriteTiles[x][y] = new Sprite(ss.grabImage(1, 1, 32, 32));
+					spriteTiles[x][y].setPosition((y * tilesize) + gameRect.x
+							+ spacing, (x * tilesize) + gameRect.y + spacing);
+					spriteTiles[x][y].setTileVal(1);
+
+					// spriteTiles[x][y] = new Sprite(ss.grabImage(1, 1, 32,
+					// 32));
+					// spriteTiles[x][y].setPosition((x * tilesize) + gameRect.y
+					// + spacing, (y * tilesize) + gameRect.x + spacing);
+
 					tiles[x][y] = new Tile((x * tilesize) + gameRect.y
 							+ spacing, (y * tilesize) + gameRect.x + spacing,
 							1, 1, tex, game, c);
 
 				} else if (temp == 2) {
+
+					spriteTiles[x][y] = new Sprite(ss.grabImage(2, 1, 32, 32));
+					spriteTiles[x][y].setPosition((y * tilesize) + gameRect.x
+							+ spacing, (x * tilesize) + gameRect.y + spacing);
+					spriteTiles[x][y].setTileVal(2);
+					// spriteTiles[x][y].setPosition((x * tilesize) + gameRect.y
+					// + spacing, (y * tilesize) + gameRect.x + spacing);
 
 					tiles[x][y] = new Tile((x * tilesize) + gameRect.y
 							+ spacing, (y * tilesize) + gameRect.x + spacing,
@@ -360,17 +394,38 @@ public class GamePanel extends JPanel {
 
 				} else if (temp == 3) {
 
+					spriteTiles[x][y] = new Sprite(ss.grabImage(3, 1, 32, 32));
+					spriteTiles[x][y].setPosition((y * tilesize) + gameRect.x
+							+ spacing, (x * tilesize) + gameRect.y + spacing);
+					spriteTiles[x][y].setTileVal(3);
+					// spriteTiles[x][y].setPosition((x * tilesize) + gameRect.y
+					// + spacing, (y * tilesize) + gameRect.x + spacing);
+
 					tiles[x][y] = new Tile((x * tilesize) + gameRect.y
 							+ spacing, (y * tilesize) + gameRect.x + spacing,
 							3, 1, tex, game, c);
 
 				} else if (temp == 4) {
 
+					spriteTiles[x][y] = new Sprite(ss.grabImage(4, 1, 32, 32));
+					spriteTiles[x][y].setPosition((y * tilesize) + gameRect.x
+							+ spacing, (x * tilesize) + gameRect.y + spacing);
+					spriteTiles[x][y].setTileVal(4);
+					// spriteTiles[x][y].setPosition((x * tilesize) + gameRect.y
+					// + spacing, (y * tilesize) + gameRect.x + spacing);
+
 					tiles[x][y] = new Tile((x * tilesize) + gameRect.y
 							+ spacing, (y * tilesize) + gameRect.x + spacing,
 							4, 1, tex, game, c);
 
 				} else if (temp == 5) {
+
+					spriteTiles[x][y] = new Sprite(ss.grabImage(5, 1, 32, 32));
+					spriteTiles[x][y].setPosition((y * tilesize) + gameRect.x
+							+ spacing, (x * tilesize) + gameRect.y + spacing);
+					spriteTiles[x][y].setTileVal(5);
+					// spriteTiles[x][y].setPosition((x * tilesize) + gameRect.y
+					// + spacing, (y * tilesize) + gameRect.x + spacing);
 
 					tiles[x][y] = new Tile((x * tilesize) + gameRect.y
 							+ spacing, (y * tilesize) + gameRect.x + spacing,
@@ -402,6 +457,7 @@ public class GamePanel extends JPanel {
 	public void render(Graphics g) {
 
 		Graphics2D g2d = (Graphics2D) g;
+		int dir = tileGame.getDirection();
 
 		if (tileGame.getGameMode() != classic) {
 			g2d.drawImage(background, 0, 0, background.getWidth(),
@@ -455,12 +511,8 @@ public class GamePanel extends JPanel {
 
 		// draws the top row that is about to drop
 		if (tileGame.getGameMode() == classic && tileGame.getDisplayRow()) {
-			// updateTileRow();
 			for (int i = 0; i < BDWIDTH; i++) {
-				// tileRow[i].render(g2d);
-				if (tileGame.getBoardRowVal(i) != 0) {
-					tileRow[i].render(g2d);
-				}
+				spriteTileRow[i].paint(g2d);
 			}
 		}
 		g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER,
@@ -470,11 +522,19 @@ public class GamePanel extends JPanel {
 		g2d.setFont(fnt0);
 		g2d.setColor(Color.WHITE);
 
-		/** Enable these to display variables in game for debugging purposes **/
-		// DrawOutline("Move Count: " + tileGame.getMoveCount(), 500, 85, g2d);
-		// DrawOutline("Display Row: " + tileGame.getDisplayRow(), 500, 100,
-		// g2d);
-		// DrawOutline("Drop Row: " + tileGame.getDropRow(), 500, 115, g2d);
+		/**
+		 * When displayStats is true display variables in game for debugging
+		 * purposes
+		 **/
+		if (displayStats) {
+
+			DrawOutline("Move Count: " + tileGame.getMoveCount(), 500, 70, g2d);
+			DrawOutline("Display Row: " + tileGame.getDisplayRow(), 500, 85,
+					g2d);
+			DrawOutline("Drop Row: " + tileGame.getDropRow(), 500, 100, g2d);
+			DrawOutline("Is Animating: " + isAnimating, 500, 115, g2d);
+
+		}
 
 		if (tileGame.getGameMode() == 1) {
 			gmStr = "Game Mode: Classic";
@@ -530,7 +590,7 @@ public class GamePanel extends JPanel {
 		}
 
 		// down
-		if (tileGame.getDirection() == 1) {
+		if (dir == 1) {
 			g2d.drawImage(tex.downTile[1], game.getWidth() - 120, 65 + 32, 32,
 					32, this);
 		} else {
@@ -538,7 +598,7 @@ public class GamePanel extends JPanel {
 					32, this);
 		}
 		// up
-		if (tileGame.getDirection() == 2) {
+		if (dir == 2) {
 			g2d.drawImage(tex.upTile[1], game.getWidth() - 120, 65 - 32, 32,
 					32, this);
 		} else {
@@ -546,7 +606,7 @@ public class GamePanel extends JPanel {
 					32, this);
 		}
 		// left
-		if (tileGame.getDirection() == 3) {
+		if (dir == 3) {
 			g2d.drawImage(tex.leftTile[1], game.getWidth() - 120 - 32, 65, 32,
 					32, this);
 		} else {
@@ -554,7 +614,7 @@ public class GamePanel extends JPanel {
 					32, this);
 		}
 		// right
-		if (tileGame.getDirection() == 4) {
+		if (dir == 4) {
 			g2d.drawImage(tex.rightTile[1], game.getWidth() - 120 + 32, 65, 32,
 					32, this);
 		} else {
@@ -571,14 +631,68 @@ public class GamePanel extends JPanel {
 
 		g2d.setStroke(oldStroke);
 
-		// draws in the tiles on the game board
+		// /**
+		// * Draws animation tiles on the board
+		// **/
+		// // down
+		// if (dir == 1) {
+		// for (int y = 0; y < BDWIDTH; y++) {
+		// for (int x = BDHEIGHT - 1; x >= 0; x--) {
+		// if (spriteTiles[x][y].getTileVal() != 0) {
+		// spriteTiles[x][y].paint(g2d);
+		// }
+		// }
+		// }
+		// }
+		// // up
+		// else if (dir == 2) {
+		// for (int y = 0; y < BDWIDTH; y++) {
+		// for (int x = 0; x < BDHEIGHT; x++) {
+		// if (spriteTiles[x][y].getTileVal() != 0) {
+		// spriteTiles[x][y].paint(g2d);
+		// }
+		// }
+		// }
+		// }
+		// // left
+		// else if (dir == 3) {
+		// for (int x = 0; x < BDHEIGHT; x++) {
+		// for (int y = 0; y < BDWIDTH; y++) {
+		// if (spriteTiles[x][y].getTileVal() != 0) {
+		// spriteTiles[x][y].paint(g2d);
+		// }
+		// }
+		// }
+		// }
+		// // right
+		// else if (dir == 4) {
+		// for (int x = 0; x < BDHEIGHT; x++) {
+		// for (int y = BDWIDTH - 1; y >= 0; y--) {
+		// if (spriteTiles[x][y].getTileVal() != 0) {
+		// spriteTiles[x][y].paint(g2d);
+		// }
+		// }
+		// }
+		// }
+
+		/* Draws animation tiles on the board */
 		for (int x = 0; x < BDHEIGHT; x++) {
 			for (int y = 0; y < BDWIDTH; y++) {
-				if (tileGame.getBoardVal(x, y) != 0) {
-					tiles[x][y].render(g2d);
+
+				if (spriteTiles[x][y].getTileVal() != 0) {
+					spriteTiles[x][y].paint(g2d);
 				}
 			}
 		}
+
+		// draws in the tiles on the game board
+		// for (int x = 0; x < BDHEIGHT; x++) {
+		// for (int y = 0; y < BDWIDTH; y++) {
+		// if (tileGame.getBoardVal(x, y) != 0) {
+		// tiles[x][y].render(g2d);
+		// }
+		// }
+		// }
 
 		g2d.setFont(fnt0);
 
@@ -822,7 +936,10 @@ public class GamePanel extends JPanel {
 			tileGame.checkMoveCount();
 
 			if (tileGame.getDropRow()) {
-				tileGame.mergeRow();
+				// tileGame.mergeRow();
+				mergeRow();
+				updateTileRow();
+
 			}
 			if (tileGame.getDisplayRow() && !tileGame.getDropRow()) {
 				showSwapDrop = true;
@@ -836,19 +953,23 @@ public class GamePanel extends JPanel {
 			}
 		}
 
-		if (tileGame.getGameMode() == classic && tileGame.getDisplayRow()) {
-			for (int i = 0; i < BDWIDTH; i++) {
-				// tileRow[i].tick();
-			}
-		}
+		// if (tileGame.getGameMode() == classic && tileGame.getDisplayRow()) {
+		// for (int i = 0; i < BDWIDTH; i++) {
+		// // tileRow[i].tick();
+		// }
+		// }
 
-		for (int x = 0; x < BDHEIGHT; x++) {
-			for (int y = 0; y < BDWIDTH; y++) {
-				// tiles[x][y].tick();
-			}
-		}
+		// for (int x = 0; x < BDHEIGHT; x++) {
+		// for (int y = 0; y < BDWIDTH; y++) {
+		// // tiles[x][y].tick();
+		// }
+		// }
 
-		UpdateBoard();
+		// UpdateBoard();
+
+		// UpdateSprites();
+
+		UpdateSpriteVal();
 
 		if (time.getElapsedTime() > 75) {
 			colorIndex++;
@@ -862,6 +983,13 @@ public class GamePanel extends JPanel {
 		}
 
 		c.tick();
+
+		CheckIsAnimating();
+
+		if (!anim.isEmpty()) {
+			anim.tick();
+		}
+
 	}
 
 	public void DrawOutline(String str, int x, int y, Graphics2D g2d) {
@@ -888,6 +1016,10 @@ public class GamePanel extends JPanel {
 
 	public void setDirection(int i) {
 		tileGame.setDirection(i);
+		// UpdateSprites();
+
+		// tileGame.setDirection(i);
+		// tileGame.Update();
 		// DropTiles();
 		// UpdateBoard();
 	}
@@ -895,56 +1027,408 @@ public class GamePanel extends JPanel {
 	public void pointClicked(Point p) {
 		clickPoint = p;
 		DropTiles();
+		UpdateBoard();
+		UpdateSprites();
+		if (tileGame.getGameMode() == 3 || tileGame.getGameMode() == 4) {
+			FillSpaces();
+		}
+	}
+
+	public void FillSpaces() {
+
+		int temp = 0;
+		Point tempPoint;
+		int dir = tileGame.getDirection();
+		float startX = 0;
+		float startY = 0;
+
+		int count = 0;
+
+		for (int x = 0; x < BDHEIGHT; x++) {
+			for (int y = 0; y < BDWIDTH; y++) {
+				temp = tileGame.getBoardVal(x, y);
+
+				if (temp == 0) {
+
+					int rand = tileGame.generateRandom();
+					tileGame.setBoardVal(x, y, rand);
+
+					tempPoint = spriteTiles[x][y].getLocation();
+
+					startX = (spriteTiles[x][y].getX());
+					startY = (spriteTiles[x][y].getY());
+
+					// DOWN
+					if (dir == 1) {
+
+						while (tileGame.inBounds(x + (count + 1), y)
+								&& tileGame.getBoardVal(x + (count + 1), y) == 0) {
+							count++;
+						}
+						startY = (spriteTiles[x][y].getY() - ((32 + (x * 32)) + (count * 32)));
+						count = 0;
+					}
+
+					// UP
+					else if (dir == 2) {
+
+						if (count == 0) {
+							while (tileGame.inBounds(x + (count + 1), y)
+									&& tileGame.getBoardVal(x + (count + 1), y) == 0) {
+								count++;
+							}
+							startY = (spriteTiles[x][y].getY() + (32 + (count * 32)));
+						}
+						if (tileGame.inBounds(x - 1, y)) {
+							startY = (spriteTiles[x - 1][y].getY() + 32);
+						}
+
+					}
+					// LEFT and RIGHT
+					else {
+						if (count == 0) {
+							while (tileGame.inBounds(x, y + (count + 1))
+									&& tileGame.getBoardVal(x, y + (count + 1)) == 0) {
+								count++;
+							}
+						}
+
+						// LEFT
+						if (dir == 3) {
+							startX = (spriteTiles[x][y].getX() + (32 + (count * 32)));
+						}
+						// RIGHT
+						else if (dir == 4) {
+							startX = (spriteTiles[x][y].getX() - (32 + (count * 32)));
+						}
+					}
+
+					spriteTiles[x][y].setPosition(startX, startY);
+
+					spriteTiles[x][y].setImage(ss.grabImage(rand, 1, 32, 32));
+
+					anim.createAnimation(new Animation(anim, spriteTiles[x][y],
+							tempPoint, animSpeed, true));
+				}
+			}
+			if (dir == 3 || dir == 4) {
+				count = 0;
+			}
+		}
 	}
 
 	public void undo() {
 		tileGame.Undo();
+
+		anim.clearAnimations();
+		// UpdateBoard();
+		if (tileGame.getGameMode() == classic) {
+			updateTileRow();
+		}
+		UpdateBoard();
 	}
 
-	public void UpdateBoard() {
+	public void addUndo() {
+		tileGame.addUndo();
+	}
+
+	public void UpdateSprites() {
+
+		int temp;
+		int count = 0;
+		Point startPoint;
+		Point destPoint;
+		BufferedImage valImg;
+		BufferedImage blankImg;
+
+		BufferedImage tempImg;
+		Point tempPoint;
+
+		int dir = tileGame.getDirection();
+
+		/* Down */
+		if (dir == 1) {
+			for (int y = 0; y < BDWIDTH; y++) {
+				for (int x = BDHEIGHT - 1; x >= 0; x--) {
+					temp = tileGame.getBoardVal(x, y);
+
+					if (temp != 0) {
+						if (tileGame.inBounds(x + 1, y)
+								&& tileGame.getBoardVal(x + 1, y) == 0) {
+							/*
+							 * This while loop determines how many empty tiles
+							 * there are below a valid tiles
+							 */
+							while (tileGame.inBounds(x + (count + 1), y)
+									&& tileGame.getBoardVal(x + (count + 1), y) == 0) {
+								count++;
+							}
+
+							startPoint = getTilePosistion(x, y);
+							destPoint = getTilePosistion(x + count, y);
+							valImg = spriteTiles[x][y].getImage();
+							blankImg = spriteTiles[x + count][y].getImage();
+
+							spriteTiles[x + count][y].setPosition(startPoint);
+							spriteTiles[x + count][y].setImage(valImg);
+							spriteTiles[x + count][y].setTileVal(temp);
+
+							spriteTiles[x][y].setTileVal(0);
+							spriteTiles[x][y].setImage(blankImg);
+
+							anim.createAnimation(new Animation(anim,
+									spriteTiles[x + count][y], destPoint,
+									animSpeed, true));
+
+							/*
+							 * This updates the board value to the correct new
+							 * value
+							 */
+							tileGame.setBoardVal(x, y, 0);
+							tileGame.setBoardVal(x + count, y, temp);
+							count = 0;
+						}
+					}
+				}
+			}
+			if (tileGame.getGameMode() == classic) {
+				for (int x = BDHEIGHT - 1; x >= 0; x--) {
+					for (int y = BDWIDTH - 1; y >= 0; y--) {
+						if (y > 0) {
+							if (tileGame.colEmpty(y)
+									&& tileGame.colEmpty(y - 1) == false) {
+
+								for (int i = BDHEIGHT - 1; i >= 0; i--) {
+
+									temp = tileGame.getBoardVal(i, y - 1);
+
+									startPoint = getTilePosistion(i, y - 1);
+									destPoint = getTilePosistion(i, y);
+									valImg = spriteTiles[i][y - 1].getImage();
+									blankImg = spriteTiles[i][y].getImage();
+
+									spriteTiles[i][y].setPosition(startPoint);
+									spriteTiles[i][y].setImage(valImg);
+									spriteTiles[i][y].setTileVal(temp);
+
+									spriteTiles[i][y - 1].setTileVal(0);
+									spriteTiles[i][y - 1].setImage(blankImg);
+
+									anim.createAnimation(new Animation(anim,
+											spriteTiles[i][y], destPoint,
+											animSpeed, true));
+
+									/*
+									 * This updates the board value to the
+									 * correct new value
+									 */
+									tileGame.setBoardVal(i, y - 1, 0);
+									tileGame.setBoardVal(i, y, temp);
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+		/* Up */
+		else if (dir == 2) {
+			for (int y = 0; y < BDWIDTH; y++) {
+				for (int x = 0; x < BDHEIGHT; x++) {
+
+					temp = tileGame.getBoardVal(x, y);
+
+					if (temp != 0) {
+						if (tileGame.inBounds(x - 1, y)
+								&& tileGame.getBoardVal(x - 1, y) == 0) {
+							/*
+							 * This while loop determines how many empty tiles
+							 * there are below a valid tiles
+							 */
+							while (tileGame.inBounds(x - (count + 1), y)
+									&& tileGame.getBoardVal(x - (count + 1), y) == 0) {
+								count++;
+							}
+
+							startPoint = getTilePosistion(x, y);
+							destPoint = getTilePosistion(x - count, y);
+							valImg = spriteTiles[x][y].getImage();
+							blankImg = spriteTiles[x - count][y].getImage();
+
+							spriteTiles[x - count][y].setPosition(startPoint);
+							spriteTiles[x - count][y].setImage(valImg);
+							spriteTiles[x - count][y].setTileVal(temp);
+
+							spriteTiles[x][y].setTileVal(0);
+							spriteTiles[x][y].setImage(blankImg);
+
+							anim.createAnimation(new Animation(anim,
+									spriteTiles[x - count][y], destPoint,
+									animSpeed, true));
+
+							/*
+							 * This updates the board value to the correct new
+							 * value
+							 */
+							tileGame.setBoardVal(x, y, 0);
+							tileGame.setBoardVal(x - count, y, temp);
+							count = 0;
+						}
+					}
+				}
+			}
+		}
+		/* Left */
+		else if (dir == 3) {
+			for (int x = 0; x < BDHEIGHT; x++) {
+				for (int y = 0; y < BDWIDTH; y++) {
+
+					temp = tileGame.getBoardVal(x, y);
+
+					if (temp != 0) {
+						if (tileGame.inBounds(x, y - 1)
+								&& tileGame.getBoardVal(x, y - 1) == 0) {
+							/*
+							 * This while loop determines how many empty tiles
+							 * there are below a valid tiles
+							 */
+							while (tileGame.inBounds(x, y - (count + 1))
+									&& tileGame.getBoardVal(x, y - (count + 1)) == 0) {
+								count++;
+							}
+
+							startPoint = getTilePosistion(x, y);
+							destPoint = getTilePosistion(x, y - count);
+							valImg = spriteTiles[x][y].getImage();
+							blankImg = spriteTiles[x][y - count].getImage();
+
+							spriteTiles[x][y - count].setPosition(startPoint);
+							spriteTiles[x][y - count].setImage(valImg);
+							spriteTiles[x][y - count].setTileVal(temp);
+
+							spriteTiles[x][y].setTileVal(0);
+							spriteTiles[x][y].setImage(blankImg);
+
+							anim.createAnimation(new Animation(anim,
+									spriteTiles[x][y - count], destPoint,
+									animSpeed, true));
+
+							/*
+							 * This updates the board value to the correct new
+							 * value
+							 */
+							tileGame.setBoardVal(x, y, 0);
+							tileGame.setBoardVal(x, y - count, temp);
+							count = 0;
+						}
+					}
+				}
+			}
+		}
+		/* Right */
+		else if (dir == 4) {
+			for (int x = 0; x < BDHEIGHT; x++) {
+				for (int y = BDWIDTH - 1; y >= 0; y--) {
+
+					temp = tileGame.getBoardVal(x, y);
+
+					if (temp != 0) {
+						if (tileGame.inBounds(x, y + 1)
+								&& tileGame.getBoardVal(x, y + 1) == 0) {
+							/*
+							 * This while loop determines how many empty tiles
+							 * there are below a valid tiles
+							 */
+							while (tileGame.inBounds(x, y + (count + 1))
+									&& tileGame.getBoardVal(x, y + (count + 1)) == 0) {
+								count++;
+							}
+
+							startPoint = getTilePosistion(x, y);
+							destPoint = getTilePosistion(x, y + count);
+							valImg = spriteTiles[x][y].getImage();
+							blankImg = spriteTiles[x][y + count].getImage();
+
+							spriteTiles[x][y + count].setPosition(startPoint);
+							spriteTiles[x][y + count].setImage(valImg);
+							spriteTiles[x][y + count].setTileVal(temp);
+
+							spriteTiles[x][y].setTileVal(0);
+							spriteTiles[x][y].setImage(blankImg);
+
+							anim.createAnimation(new Animation(anim,
+									spriteTiles[x][y + count], destPoint,
+									animSpeed, true));
+
+							/*
+							 * This updates the board value to the correct new
+							 * value
+							 */
+							tileGame.setBoardVal(x, y, 0);
+							tileGame.setBoardVal(x, y + count, temp);
+							count = 0;
+						}
+					}
+				}
+			}
+		}
+	}
+
+	public void CheckIsAnimating() {
+		if (anim.isEmpty()) {
+			isAnimating = false;
+		} else {
+			isAnimating = true;
+		}
+	}
+
+	public boolean IsAnimating() {
+		return isAnimating;
+	}
+
+	public void UpdateSpriteVal() {
+		int tempVal = 0;
 
 		for (int x = 0; x < BDHEIGHT; x++) {
 			for (int y = 0; y < BDWIDTH; y++) {
-
 				int temp = tileGame.getBoardVal(x, y);
 
 				if (temp == 0) {
-
-					tiles[x][y] = new Tile((x * tilesize) + gameRect.y
-							+ spacing, (y * tilesize) + gameRect.x + spacing,
-							7, 1, tex, game, c);
-
+					tempVal = 0;
 				} else if (temp == 1) {
-
-					tiles[x][y] = new Tile((x * tilesize) + gameRect.y
-							+ spacing, (y * tilesize) + gameRect.x + spacing,
-							1, 1, tex, game, c);
-
+					tempVal = 1;
 				} else if (temp == 2) {
-
-					tiles[x][y] = new Tile((x * tilesize) + gameRect.y
-							+ spacing, (y * tilesize) + gameRect.x + spacing,
-							2, 1, tex, game, c);
-
+					tempVal = 2;
 				} else if (temp == 3) {
-
-					tiles[x][y] = new Tile((x * tilesize) + gameRect.y
-							+ spacing, (y * tilesize) + gameRect.x + spacing,
-							3, 1, tex, game, c);
-
+					tempVal = 3;
 				} else if (temp == 4) {
-
-					tiles[x][y] = new Tile((x * tilesize) + gameRect.y
-							+ spacing, (y * tilesize) + gameRect.x + spacing,
-							4, 1, tex, game, c);
-
+					tempVal = 4;
 				} else if (temp == 5) {
-
-					tiles[x][y] = new Tile((x * tilesize) + gameRect.y
-							+ spacing, (y * tilesize) + gameRect.x + spacing,
-							5, 1, tex, game, c);
-
+					tempVal = 5;
 				}
+				spriteTiles[x][y].setTileVal(tempVal);
+			}
+		}
+	}
+
+	public void UpdateBoard() {
+		int tempNum;
+
+		for (int x = 0; x < BDHEIGHT; x++) {
+			for (int y = 0; y < BDWIDTH; y++) {
+				tempNum = 7; // default to the 0 value tile
+				int temp = tileGame.getBoardVal(x, y);
+				Point tempPoint = new Point((y * tilesize) + gameRect.x
+						+ spacing, (x * tilesize) + gameRect.y + spacing);
+
+				if (temp != 0) {
+					// if tile is not empty the board value is the same as the
+					// tile position
+					tempNum = temp;
+				}
+
+				spriteTiles[x][y].setImage(ss.grabImage(tempNum, 1, 32, 32));
+				spriteTiles[x][y].setPosition(tempPoint.x, tempPoint.y);
 			}
 		}
 	}
@@ -970,6 +1454,9 @@ public class GamePanel extends JPanel {
 	}
 
 	public void DropTiles() {
+
+		// tileGame.outputBoard();
+
 		String shapeStr = "";
 		String shape = "";
 		int count;
@@ -1047,8 +1534,8 @@ public class GamePanel extends JPanel {
 
 			}
 			copyTempBoard();
-			breakTiles();
-			tileGame.DropTiles();
+			// breakTiles();
+			// tileGame.DropTiles();
 
 			if (tileVal != 5) {
 
@@ -1073,6 +1560,10 @@ public class GamePanel extends JPanel {
 		if (tileGame.getGameMode() == criticalMass) {
 
 		}
+
+	}
+
+	public void RemoveClicked() {
 
 	}
 
@@ -1209,7 +1700,63 @@ public class GamePanel extends JPanel {
 	}
 
 	public void mergeRow() {
-		tileGame.mergeRow();
+		int count = 0;
+		Point startPoint;
+		Point destPoint;
+
+		for (int i = 0; i < BDWIDTH; i++) {
+			// tileGame.addUndo();
+			// tileGame.setPrevRowVal(i, tileGame.getBoardRowVal(i));
+			if (tileGame.getRowVal(i) != 0 && tileGame.getBoardVal(0, i) == 0) {
+
+				while (tileGame.inBounds(0 + count, i)
+						&& tileGame.getBoardVal(0 + count, i) == 0) {
+					count++;
+				}
+
+				startPoint = getTileRowPosistion(i);
+				destPoint = getTilePosistion(0 + count - 1, i);
+
+				// This section changes the values on the tile game side
+				tileGame.setBoardVal(0 + count - 1, i,
+						tileGame.getBoardRowVal(i));
+				tileGame.setBoardRowVal(i, 0);
+
+				// Sets the tile to move's image to the corresponding row tile
+				spriteTiles[0 + (count - 1)][i].setImage(spriteTileRow[i]
+						.getImage());
+
+				// Sets the board tile's position to the row tile's position
+				spriteTiles[0 + (count - 1)][i].setPosition(startPoint);
+
+				// creates an animation to move the board tile back to its
+				// original position
+				anim.createAnimation(new Animation(anim,
+						spriteTiles[0 + (count - 1)][i], destPoint, animSpeed,
+						true));
+
+				tileGame.mergeRow();
+
+				count = 0;
+			}
+
+		}
+	}
+
+	public Point getTilePosistion(int x, int y) {
+		Point p = new Point((y * tilesize) + gameRect.x + spacing,
+				(x * tilesize) + gameRect.y + spacing);
+		return p;
+	}
+
+	public Point getTileRowPosistion(int i) {
+		Point p = new Point((i * tilesize) + gameRect.x + spacing, gameRect.y
+				+ spacing - tilesize - 10);
+		return p;
+	}
+
+	public Sprite getTileSprite(int x, int y) {
+		return spriteTiles[x][y];
 	}
 
 	public void startTimer() {
@@ -1241,37 +1788,22 @@ public class GamePanel extends JPanel {
 
 	public void updateTileRow() {
 
-		for (int i = 0; i < BDWIDTH; i++) {
-			int temp = tileGame.getBoardRowVal(i);
+		int tileNum;
 
+		for (int i = 0; i < BDWIDTH; i++) {
+			tileNum = 7; // default to the 0 value tile
+			int temp = tileGame.getBoardRowVal(i);
 			int tempX = (gameRect.y + spacing - tilesize - 10);
 
-			if (temp == 1) {
-
-				tileRow[i] = new Tile(tempX, (i * tilesize) + gameRect.x
-						+ spacing, 1, 1, tex, game, c);
-
-			} else if (temp == 2) {
-
-				tileRow[i] = new Tile(tempX, (i * tilesize) + gameRect.x
-						+ spacing, 2, 1, tex, game, c);
-
-			} else if (temp == 3) {
-
-				tileRow[i] = new Tile(tempX, (i * tilesize) + gameRect.x
-						+ spacing, 3, 1, tex, game, c);
-
-			} else if (temp == 4) {
-
-				tileRow[i] = new Tile(tempX, (i * tilesize) + gameRect.x
-						+ spacing, 4, 1, tex, game, c);
-
-			} else if (temp == 5) {
-
-				tileRow[i] = new Tile(tempX, (i * tilesize) + gameRect.x
-						+ spacing, 5, 1, tex, game, c);
-
+			if (temp != 0) {
+				// if tile is not empty the board value is the same as the
+				// tile position
+				tileNum = temp;
 			}
+
+			spriteTileRow[i] = new Sprite(ss.grabImage(tileNum, 1, 32, 32));
+			spriteTileRow[i].setPosition((i * tilesize) + gameRect.x + spacing,
+					tempX);
 		}
 	}
 
@@ -1281,6 +1813,10 @@ public class GamePanel extends JPanel {
 
 	public boolean EditingBoard() {
 		return editGame;
+	}
+
+	public void OutputBoard() {
+		tileGame.outputBoard();
 	}
 
 	public void mouseClicked(Point p) {
@@ -1511,11 +2047,16 @@ public class GamePanel extends JPanel {
 	public void loadCurrentGame() {
 		tileGame.loadCurrentGame();
 		moveCount = tileGame.getMoveCount();
+		UpdateBoard();
 		updateTileRow();
 	}
 
 	public void subtractMoveCount() {
 		tileGame.subtractMoveCount();
+	}
+
+	public void addMoveCount() {
+		tileGame.addMoveCount();
 	}
 
 	public void checkMoveCount() {
@@ -1585,9 +2126,9 @@ public class GamePanel extends JPanel {
 
 		tileGame = new TileGame(boardSize, gm);
 		if (gm == 1) {
-			tileGame.createRow();
+			// tileGame.createRow();
 		}
-		// tileGame.setGameMode(gm);
+		gameMode = gm;
 	}
 
 	public void setActualClickPoint(Point p) {
@@ -1604,6 +2145,10 @@ public class GamePanel extends JPanel {
 
 	public void setMoveCount(int mc) {
 		tileGame.setMoveCount(mc);
+	}
+
+	public void setDisplayStats(boolean b) {
+		displayStats = b;
 	}
 
 	public void createNewRow() {

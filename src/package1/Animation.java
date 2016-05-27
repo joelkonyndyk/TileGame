@@ -1,587 +1,151 @@
 package package1;
 
 import java.awt.Graphics;
-import java.awt.image.BufferedImage;
+import java.awt.Graphics2D;
+import java.awt.Image;
+import java.awt.Point;
+import java.util.ArrayList;
+import java.util.LinkedList;
 
 public class Animation {
-	private int speed;
-	private int frames;
-	private int index = 0;
-	private int count = 0;
 
-	private BufferedImage img1;
-	private BufferedImage img2;
-	private BufferedImage img3;
-	private BufferedImage img4;
-	private BufferedImage img5;
-	private BufferedImage img6;
-	private BufferedImage img7;
-	private BufferedImage img8;
-	private BufferedImage img9;
-	private BufferedImage img10;
-	private BufferedImage img11;
-	private BufferedImage img12;
-	private BufferedImage img13;
-	private BufferedImage img14;
+	// private StopWatch time = new StopWatch();
 
-	private BufferedImage currentImg;
+	private Sprite sprite;
 
-	// 13 frame animation
-	public Animation(int speed, BufferedImage img1, BufferedImage img2,
-			BufferedImage img3, BufferedImage img4, BufferedImage img5,
-			BufferedImage img6, BufferedImage img7, BufferedImage img8,
-			BufferedImage img9, BufferedImage img10, BufferedImage img11,
-			BufferedImage img12, BufferedImage img13, BufferedImage img14) {
-		this.speed = speed;
-		this.img1 = img1;
-		this.img2 = img2;
-		this.img3 = img3;
-		this.img4 = img4;
-		this.img5 = img5;
-		this.img6 = img6;
-		this.img7 = img7;
-		this.img8 = img8;
-		this.img9 = img9;
-		this.img10 = img10;
-		this.img11 = img11;
-		this.img12 = img12;
-		this.img13 = img13;
-		this.img14 = img14;
-		frames = 14;
+	private AnimationController animCont;
+
+	private int destX, destY;
+
+	// distance to destination
+	private float distX, distY;
+
+	// increment to move per turn
+	private float incX, incY;
+
+	private float incRotate;
+
+	private float rotate = 0;
+
+	private boolean animateUsingSpeed;
+
+	// Number of ticks animation will be (Shoud mabye be swapped in the future
+	// to actual time)
+	private int duration;
+
+	// Constructors
+	public Animation(AnimationController ac, Sprite s, Point destPt,
+			int duration) {
+		sprite = s;
+
+		animCont = ac;
+
+		destX = destPt.x;
+		destY = destPt.y;
+
+		this.duration = duration;
+
+		init();
+	}
+	
+	public Animation(AnimationController ac, Sprite s, Point destPt,
+			int duration, boolean b) {
+		sprite = s;
+
+		animCont = ac;
+
+		destX = destPt.x;
+		destY = destPt.y;
+
+		this.duration = duration;
+		
+		animateUsingSpeed = b;
+
+		init();
 	}
 
-	// 13 frame animation
-	public Animation(int speed, BufferedImage img1, BufferedImage img2,
-			BufferedImage img3, BufferedImage img4, BufferedImage img5,
-			BufferedImage img6, BufferedImage img7, BufferedImage img8,
-			BufferedImage img9, BufferedImage img10, BufferedImage img11,
-			BufferedImage img12, BufferedImage img13) {
-		this.speed = speed;
-		this.img1 = img1;
-		this.img2 = img2;
-		this.img3 = img3;
-		this.img4 = img4;
-		this.img5 = img5;
-		this.img6 = img6;
-		this.img7 = img7;
-		this.img8 = img8;
-		this.img9 = img9;
-		this.img10 = img10;
-		this.img11 = img11;
-		this.img12 = img12;
-		this.img13 = img13;
-		frames = 13;
+	public Animation(AnimationController ac, Sprite s, Point destPt,
+			int rotate, int duration) {
+		sprite = s;
+
+		animCont = ac;
+
+		destX = destPt.x;
+		destY = destPt.y;
+
+		this.duration = duration;
+		this.rotate = rotate;
+
+		init();
 	}
 
-	// 12 frame animation
-	public Animation(int speed, BufferedImage img1, BufferedImage img2,
-			BufferedImage img3, BufferedImage img4, BufferedImage img5,
-			BufferedImage img6, BufferedImage img7, BufferedImage img8,
-			BufferedImage img9, BufferedImage img10, BufferedImage img11,
-			BufferedImage img12) {
-		this.speed = speed;
-		this.img1 = img1;
-		this.img2 = img2;
-		this.img3 = img3;
-		this.img4 = img4;
-		this.img5 = img5;
-		this.img6 = img6;
-		this.img7 = img7;
-		this.img8 = img8;
-		this.img9 = img9;
-		this.img10 = img10;
-		this.img11 = img11;
-		this.img12 = img12;
-		frames = 12;
+	// Methods
+
+	public void init() {
+		distX = destX - sprite.getX();
+		distY = destY - sprite.getY();
+
+		if (animateUsingSpeed && distX < 0 || distY < 0) {
+			duration = -(duration);
+		} 
+		
+		incX = distX / duration;
+		incY = distY / duration;
+
+		incRotate = rotate / duration;
+
+		distX = Math.abs(distX);
+		distY = Math.abs(distY);
+
+		if (animateUsingSpeed) {
+			incX = duration;
+			incY = duration;
+		} 
+//		else {
+//			distX = Math.abs(distX);
+//			distY = Math.abs(distY);
+//		}
 	}
 
-	// 11 frame animation
-	public Animation(int speed, BufferedImage img1, BufferedImage img2,
-			BufferedImage img3, BufferedImage img4, BufferedImage img5,
-			BufferedImage img6, BufferedImage img7, BufferedImage img8,
-			BufferedImage img9, BufferedImage img10, BufferedImage img11) {
-		this.speed = speed;
-		this.img1 = img1;
-		this.img2 = img2;
-		this.img3 = img3;
-		this.img4 = img4;
-		this.img5 = img5;
-		this.img6 = img6;
-		this.img7 = img7;
-		this.img8 = img8;
-		this.img9 = img9;
-		this.img10 = img10;
-		this.img11 = img11;
-		frames = 11;
-	}
+	public void tick() {
 
-	// 10 frame animation
-	public Animation(int speed, BufferedImage img1, BufferedImage img2,
-			BufferedImage img3, BufferedImage img4, BufferedImage img5,
-			BufferedImage img6, BufferedImage img7, BufferedImage img8,
-			BufferedImage img9, BufferedImage img10) {
-		this.speed = speed;
-		this.img1 = img1;
-		this.img2 = img2;
-		this.img3 = img3;
-		this.img4 = img4;
-		this.img5 = img5;
-		this.img6 = img6;
-		this.img7 = img7;
-		this.img8 = img8;
-		this.img9 = img9;
-		this.img10 = img10;
-		frames = 10;
-	}
-
-	// 9 frame
-	public Animation(int speed, BufferedImage img1, BufferedImage img2,
-			BufferedImage img3, BufferedImage img4, BufferedImage img5,
-			BufferedImage img6, BufferedImage img7, BufferedImage img8,
-			BufferedImage img9) {
-		this.speed = speed;
-		this.img1 = img1;
-		this.img2 = img2;
-		this.img3 = img3;
-		this.img4 = img4;
-		this.img5 = img5;
-		this.img6 = img6;
-		this.img7 = img7;
-		this.img8 = img8;
-		this.img9 = img9;
-		frames = 9;
-	}
-
-	// 8 frame
-	public Animation(int speed, BufferedImage img1, BufferedImage img2,
-			BufferedImage img3, BufferedImage img4, BufferedImage img5,
-			BufferedImage img6, BufferedImage img7, BufferedImage img8) {
-		this.speed = speed;
-		this.img1 = img1;
-		this.img2 = img2;
-		this.img3 = img3;
-		this.img4 = img4;
-		this.img5 = img5;
-		this.img6 = img6;
-		this.img7 = img7;
-		this.img8 = img8;
-		frames = 8;
-	}
-
-	// 7 frame
-	public Animation(int speed, BufferedImage img1, BufferedImage img2,
-			BufferedImage img3, BufferedImage img4, BufferedImage img5,
-			BufferedImage img6, BufferedImage img7) {
-		this.speed = speed;
-		this.img1 = img1;
-		this.img2 = img2;
-		this.img3 = img3;
-		this.img4 = img4;
-		this.img5 = img5;
-		this.img6 = img6;
-		this.img7 = img7;
-		frames = 7;
-	}
-
-	// 6 frame
-	public Animation(int speed, BufferedImage img1, BufferedImage img2,
-			BufferedImage img3, BufferedImage img4, BufferedImage img5,
-			BufferedImage img6) {
-		this.speed = speed;
-		this.img1 = img1;
-		this.img2 = img2;
-		this.img3 = img3;
-		this.img4 = img4;
-		this.img5 = img5;
-		this.img6 = img6;
-		frames = 6;
-	}
-
-	// 5 frame
-	public Animation(int speed, BufferedImage img1, BufferedImage img2,
-			BufferedImage img3, BufferedImage img4, BufferedImage img5) {
-		this.speed = speed;
-		this.img1 = img1;
-		this.img2 = img2;
-		this.img3 = img3;
-		this.img4 = img4;
-		this.img5 = img5;
-		frames = 5;
-	}
-
-	// 4 frame
-	public Animation(int speed, BufferedImage img1, BufferedImage img2,
-			BufferedImage img3, BufferedImage img4) {
-		this.speed = speed;
-		this.img1 = img1;
-		this.img2 = img2;
-		this.img3 = img3;
-		this.img4 = img4;
-		frames = 4;
-	}
-
-	// 3 frame
-	public Animation(int speed, BufferedImage img1, BufferedImage img2,
-			BufferedImage img3) {
-		this.speed = speed;
-		this.img1 = img1;
-		this.img2 = img2;
-		this.img3 = img3;
-		frames = 3;
-	}
-
-	// 2 frame
-	public Animation(int speed, BufferedImage img1, BufferedImage img2) {
-		this.speed = speed;
-		this.img1 = img1;
-		this.img2 = img2;
-		frames = 2;
-	}
-
-	public void runAnimation() {
-		index++;
-		if (index > speed) {
-			index = 0;
-			nextFrame();
+		if (distX > Math.abs(incX)) {
+			sprite.setPosition(sprite.getX() + incX, sprite.getY());
+			distX -= Math.abs(incX);
+		} else {
+			sprite.setPosition(destX, sprite.getY());
 		}
-	}
 
-	public void nextFrame() {
-
-		// switch statement
-		switch (frames) {
-		case 2:
-			if (count == 0)
-				currentImg = img1;
-			if (count == 1)
-				currentImg = img2;
-
-			count++;
-
-			if (count > frames)
-				count = 0;
-
-			break;
-		case 3:
-			if (count == 0)
-				currentImg = img1;
-			if (count == 1)
-				currentImg = img2;
-			if (count == 2)
-				currentImg = img3;
-
-			count++;
-
-			if (count > frames)
-				count = 0;
-
-			break;
-		case 4:
-			if (count == 0)
-				currentImg = img1;
-			if (count == 1)
-				currentImg = img2;
-			if (count == 2)
-				currentImg = img3;
-			if (count == 3)
-				currentImg = img4;
-
-			count++;
-
-			if (count > frames)
-				count = 0;
-
-			break;
-		case 5:
-			if (count == 0)
-				currentImg = img1;
-			if (count == 1)
-				currentImg = img2;
-			if (count == 2)
-				currentImg = img3;
-			if (count == 3)
-				currentImg = img4;
-			if (count == 4)
-				currentImg = img5;
-
-			count++;
-
-			if (count > frames)
-				count = 0;
-
-			break;
-		case 6:
-			if (count == 0)
-				currentImg = img1;
-			if (count == 1)
-				currentImg = img2;
-			if (count == 2)
-				currentImg = img3;
-			if (count == 3)
-				currentImg = img4;
-			if (count == 4)
-				currentImg = img5;
-			if (count == 5)
-				currentImg = img6;
-
-			count++;
-
-			if (count > frames)
-				count = 0;
-
-			break;
-		case 7:
-			if (count == 0)
-				currentImg = img1;
-			if (count == 1)
-				currentImg = img2;
-			if (count == 2)
-				currentImg = img3;
-			if (count == 3)
-				currentImg = img4;
-			if (count == 4)
-				currentImg = img5;
-			if (count == 5)
-				currentImg = img6;
-			if (count == 6)
-				currentImg = img7;
-
-			count++;
-
-			if (count > frames)
-				count = 0;
-
-			break;
-		case 8:
-			if (count == 0)
-				currentImg = img1;
-			if (count == 1)
-				currentImg = img2;
-			if (count == 2)
-				currentImg = img3;
-			if (count == 3)
-				currentImg = img4;
-			if (count == 4)
-				currentImg = img5;
-			if (count == 5)
-				currentImg = img6;
-			if (count == 6)
-				currentImg = img7;
-			if (count == 7)
-				currentImg = img8;
-
-			count++;
-
-			if (count > frames)
-				count = 0;
-
-			break;
-		case 9:
-			if (count == 0)
-				currentImg = img1;
-			if (count == 1)
-				currentImg = img2;
-			if (count == 2)
-				currentImg = img3;
-			if (count == 3)
-				currentImg = img4;
-			if (count == 4)
-				currentImg = img5;
-			if (count == 5)
-				currentImg = img6;
-			if (count == 6)
-				currentImg = img7;
-			if (count == 7)
-				currentImg = img8;
-			if (count == 8)
-				currentImg = img9;
-
-			count++;
-
-			if (count > frames)
-				count = 0;
-
-			break;
-		case 10:
-			if (count == 0)
-				currentImg = img1;
-			if (count == 1)
-				currentImg = img2;
-			if (count == 2)
-				currentImg = img3;
-			if (count == 3)
-				currentImg = img4;
-			if (count == 4)
-				currentImg = img5;
-			if (count == 5)
-				currentImg = img6;
-			if (count == 6)
-				currentImg = img7;
-			if (count == 7)
-				currentImg = img8;
-			if (count == 8)
-				currentImg = img9;
-			if (count == 9)
-				currentImg = img10;
-
-			count++;
-
-			if (count > frames)
-				count = 0;
-
-			break;
-		case 11:
-			if (count == 0)
-				currentImg = img1;
-			if (count == 1)
-				currentImg = img2;
-			if (count == 2)
-				currentImg = img3;
-			if (count == 3)
-				currentImg = img4;
-			if (count == 4)
-				currentImg = img5;
-			if (count == 5)
-				currentImg = img6;
-			if (count == 6)
-				currentImg = img7;
-			if (count == 7)
-				currentImg = img8;
-			if (count == 8)
-				currentImg = img9;
-			if (count == 9)
-				currentImg = img10;
-			if (count == 10)
-				currentImg = img11;
-
-			count++;
-
-			if (count > frames)
-				count = 0;
-
-			break;
-		case 12:
-			if (count == 0)
-				currentImg = img1;
-			if (count == 1)
-				currentImg = img2;
-			if (count == 2)
-				currentImg = img3;
-			if (count == 3)
-				currentImg = img4;
-			if (count == 4)
-				currentImg = img5;
-			if (count == 5)
-				currentImg = img6;
-			if (count == 6)
-				currentImg = img7;
-			if (count == 7)
-				currentImg = img8;
-			if (count == 8)
-				currentImg = img9;
-			if (count == 9)
-				currentImg = img10;
-			if (count == 10)
-				currentImg = img11;
-			if (count == 11)
-				currentImg = img12;
-
-			count++;
-
-			if (count > frames)
-				count = 0;
-
-			break;
-		case 13:
-			if (count == 0)
-				currentImg = img1;
-			if (count == 1)
-				currentImg = img2;
-			if (count == 2)
-				currentImg = img3;
-			if (count == 3)
-				currentImg = img4;
-			if (count == 4)
-				currentImg = img5;
-			if (count == 5)
-				currentImg = img6;
-			if (count == 6)
-				currentImg = img7;
-			if (count == 7)
-				currentImg = img8;
-			if (count == 8)
-				currentImg = img9;
-			if (count == 9)
-				currentImg = img10;
-			if (count == 10)
-				currentImg = img11;
-			if (count == 11)
-				currentImg = img12;
-			if (count == 12)
-				currentImg = img13;
-
-			count++;
-
-			if (count > frames)
-				count = 0;
-
-			break;
-		case 14:
-			if (count == 0)
-				currentImg = img1;
-			if (count == 1)
-				currentImg = img2;
-			if (count == 2)
-				currentImg = img3;
-			if (count == 3)
-				currentImg = img4;
-			if (count == 4)
-				currentImg = img5;
-			if (count == 5)
-				currentImg = img6;
-			if (count == 6)
-				currentImg = img7;
-			if (count == 7)
-				currentImg = img8;
-			if (count == 8)
-				currentImg = img9;
-			if (count == 9)
-				currentImg = img10;
-			if (count == 10)
-				currentImg = img11;
-			if (count == 11)
-				currentImg = img12;
-			if (count == 12)
-				currentImg = img13;
-			if (count == 13)
-				currentImg = img14;
-
-			count++;
-
-			if (count > frames)
-				count = 0;
-
-			break;
+		if (distY > Math.abs(incY)) {
+			sprite.setPosition(sprite.getX(), sprite.getY() + incY);
+			distY -= Math.abs(incY);
+		} else {
+			sprite.setPosition(sprite.getX(), destY);
 		}
+
+		if (sprite.getX() == destX && sprite.getY() == destY) {
+			animCont.removeAnimation(this);
+		}
+
+		// This is where the sprite gets rotated
+		if (rotate != 0) {
+			// System.out.println(rotate);
+			// System.out.println(incRotate);
+
+			sprite.rotateImage(incRotate);
+			rotate -= incRotate;
+		}
+
 	}
 
-	public void drawAnimation(Graphics g, double x, double y, int offset) {
-		g.drawImage(currentImg, (int) x - offset, (int) y, null);
+	public void render(Graphics g) {
+		Graphics2D g2d = (Graphics2D) g;
 	}
 
-	public void setCount(int count) {
-		this.count = count;
+	// Getters and Setters
+
+	public void setAnimUsingSpeed(boolean b) {
+		animateUsingSpeed = b;
 	}
 
-	public int getCount() {
-		return count;
-	}
-
-	public int getSpeed() {
-		return speed;
-	}
-
-	public void setSpeed(int speed) {
-		this.speed = speed;
-	}
 }

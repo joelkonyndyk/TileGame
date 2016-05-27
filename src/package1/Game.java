@@ -32,6 +32,8 @@ public class Game extends Canvas implements Runnable, WindowListener {
 	public static final int HEIGHT = WIDTH / 12 * 10;
 	public static final int SCALE = 2;
 
+	private double frameCap = 1.0 / 60.0; // 60 frames per second
+
 	public final String TITLE = "Tile Game";
 
 	private boolean running = false;
@@ -213,8 +215,8 @@ public class Game extends Canvas implements Runnable, WindowListener {
 			Font fnt0 = new Font("arial", Font.BOLD, 15);
 			g.setFont(fnt0);
 			g.setColor(Color.WHITE);
-			g.drawString(updates + " Ticks", 15, 15);
-			g.drawString("Fps " + frames, 15, 30);
+			g.drawString(updates + " Ticks", 730, 120);
+			g.drawString("Fps " + frames, 730, 135);
 
 		}
 
@@ -235,6 +237,7 @@ public class Game extends Canvas implements Runnable, WindowListener {
 			} else {
 				displayStats = true;
 			}
+			gamePanel.setDisplayStats(displayStats);
 		}
 		// Fires undo function when "U" is pressed
 		if (key == KeyEvent.VK_U) {

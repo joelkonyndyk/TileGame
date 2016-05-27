@@ -9,6 +9,8 @@ public class Tile extends GameObject implements EntityA {
 	// private double x;
 	// private double y;
 
+	private int tileVal = 0;
+
 	private double speed = 1;
 
 	private double velX = 0;
@@ -41,37 +43,41 @@ public class Tile extends GameObject implements EntityA {
 		this.game = game;
 		this.c = c;
 
-		if (row == 1) {
-			// anim = new Animation(5, tex.player[0], tex.player[1],
-			// tex.player[2]);
-			animBreak = new Animation(animSpeed, tex.blueTile[0],
-					tex.blueTile[1], tex.blueTile[2], tex.blueTile[3]);
-
-		} else if (row == 2) {
-			// anim = new Animation(5, tex.player[0], tex.player[1],
-			// tex.player[2]);
-			animBreak = new Animation(animSpeed, tex.redTile[0],
-					tex.redTile[1], tex.redTile[2], tex.redTile[3]);
-
-		} else if (row == 3) {
-			// anim = new Animation(5, tex.player[0], tex.player[1],
-			// tex.player[2]);
-			animBreak = new Animation(animSpeed, tex.goldTile[0],
-					tex.goldTile[1], tex.goldTile[2], tex.goldTile[3]);
-
-		} else if (row == 4) {
-			// anim = new Animation(5, tex.player[0], tex.player[1],
-			// tex.player[2]);
-			animBreak = new Animation(animSpeed, tex.silverTile[0],
-					tex.silverTile[1], tex.silverTile[2], tex.silverTile[3]);
-
-		} else if (row == 5) {
-			// anim = new Animation(5, tex.player[0], tex.player[1],
-			// tex.player[2]);
-			// animBreak = new Animation(5, tex.player[0], tex.player[1],
-			// tex.player[2]);
-
-		}
+		/**
+		 * The below code is working towards adding animations when the tiles
+		 * break
+		 **/
+		// if (row == 1) {
+		// // anim = new Animation(5, tex.player[0], tex.player[1],
+		// // tex.player[2]);
+		// animBreak = new Animation(animSpeed, tex.blueTile[0],
+		// tex.blueTile[1], tex.blueTile[2], tex.blueTile[3]);
+		//
+		// } else if (row == 2) {
+		// // anim = new Animation(5, tex.player[0], tex.player[1],
+		// // tex.player[2]);
+		// animBreak = new Animation(animSpeed, tex.redTile[0],
+		// tex.redTile[1], tex.redTile[2], tex.redTile[3]);
+		//
+		// } else if (row == 3) {
+		// // anim = new Animation(5, tex.player[0], tex.player[1],
+		// // tex.player[2]);
+		// animBreak = new Animation(animSpeed, tex.goldTile[0],
+		// tex.goldTile[1], tex.goldTile[2], tex.goldTile[3]);
+		//
+		// } else if (row == 4) {
+		// // anim = new Animation(5, tex.player[0], tex.player[1],
+		// // tex.player[2]);
+		// animBreak = new Animation(animSpeed, tex.silverTile[0],
+		// tex.silverTile[1], tex.silverTile[2], tex.silverTile[3]);
+		//
+		// } else if (row == 5) {
+		// // anim = new Animation(5, tex.player[0], tex.player[1],
+		// // tex.player[2]);
+		// // animBreak = new Animation(5, tex.player[0], tex.player[1],
+		// // tex.player[2]);
+		//
+		// }
 
 		// anim = new Animation(5, tex.player[0], tex.player[1], tex.player[2]);
 		// animBreak = new Animation(5, tex.player[0], tex.player[1],
@@ -177,6 +183,14 @@ public class Tile extends GameObject implements EntityA {
 
 	public void setBreakT(boolean b) {
 		this.breakT = b;
+	}
+
+	public void setTileVal(int i) {
+		tileVal = i;
+	}
+
+	public int getTileVal() {
+		return tileVal;
 	}
 
 }

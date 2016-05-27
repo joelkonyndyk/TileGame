@@ -93,41 +93,39 @@ public class MouseInput implements MouseListener, MouseMotionListener {
 			if (gamePanel.getGameMode() == 2 || gamePanel.getGameMode() == 3
 					|| gamePanel.getGameMode() == 4) {
 
-				// down & up
-				if (mx >= game.getWidth() - 120
-						&& mx <= game.getWidth() - 120 + 32) {
-					// down
-					if (my >= 65 + 32 && my <= 65 + 32 + 32) {
-						gamePanel.setDirection(1);
-					}
-					// up
-					else if (my >= 65 - 32 && my <= 65) {
-						gamePanel.setDirection(2);
-					}
+				// Don't allow user to change direction when there are
+				// animations occurring
+				if (!gamePanel.IsAnimating()) {
 
+					// down & up
+					if (mx >= game.getWidth() - 120
+							&& mx <= game.getWidth() - 120 + 32) {
+						// down
+						if (my >= 65 + 32 && my <= 65 + 32 + 32) {
+							gamePanel.setDirection(1);
+						}
+						// up
+						else if (my >= 65 - 32 && my <= 65) {
+							gamePanel.setDirection(2);
+						}
+					}
+					// left & right
+					if (my >= 65 && my <= 65 + 32) {
+						// left
+						if (mx >= game.getWidth() - 120 - 32
+								&& mx <= game.getWidth() - 120) {
+							gamePanel.setDirection(3);
+						}
+						// right
+						else if (mx >= game.getWidth() - 120 + 32
+								&& mx <= game.getWidth() - 120 + 32 + 32) {
+							gamePanel.setDirection(4);
+						}
+					}
 				}
-				// left & right
-				if (my >= 65 && my <= 65 + 32) {
-					// left
-					if (mx >= game.getWidth() - 120 - 32
-							&& mx <= game.getWidth() - 120) {
-						gamePanel.setDirection(3);
-					}
-					// right
-					else if (mx >= game.getWidth() - 120 + 32
-							&& mx <= game.getWidth() - 120 + 32 + 32) {
-						gamePanel.setDirection(4);
-					}
-
-				}
-
 			}
 
-			// gamePanel.boardCleared();
-
 			if (gamePanel.getGameMode() == 1) {
-
-				// gamePanel.boardCleared();
 
 				// Classic mode power ups
 				if (!gamePanel.gameIsOver()) {
@@ -139,7 +137,9 @@ public class MouseInput implements MouseListener, MouseMotionListener {
 						}
 						// drop row button (100, 90)
 						else if (gamePanel.getDropRectangle().contains(p)) {
+							gamePanel.addUndo();
 							gamePanel.setDropRow(true);
+							gamePanel.addMoveCount();
 							gamePanel.displayBPointUse(10);
 						}
 					}
@@ -151,25 +151,9 @@ public class MouseInput implements MouseListener, MouseMotionListener {
 							gamePanel.setShowFillBoard(false);
 						}
 					}
-					// gamePanel.boardCleared();
 				}
-
-				// if (gamePanel.getDisplayRow()) {
-				// gamePanel.updateTileRow();
-				// }
-
 				gamePanel.checkCreateRow();
 				gamePanel.updateTileRow();
-
-				// gamePanel.boardCleared();
-
-				// if (gamePanel.isBoardCleared()){
-				//
-				// }
-
-				// if (gamePanel.isBoardCleared()) {
-				// System.out.println("Board Cleared! Now");
-				// }
 			}
 
 			// Critical Mass Power ups
@@ -204,6 +188,7 @@ public class MouseInput implements MouseListener, MouseMotionListener {
 							if (gamePanel.getGameMode() == 1) {
 								gamePanel.subtractMoveCount();
 								gamePanel.checkMoveCount();
+								gamePanel.setDropRow(false);
 								gamePanel.setUndoPts(true);
 								// System.out.println("yep");
 							}
@@ -227,16 +212,25 @@ public class MouseInput implements MouseListener, MouseMotionListener {
 						}
 					}
 				}
-			} else {
+			}
+			/*
+			 * This Section check to see if any of the game tiles were clicked
+			 */
+			else if (!gamePanel.IsAnimating()) {
 				Point tempPoint = null;
 				for (int x = 0; x < BDHEIGHT; x++) {
 					for (int y = 0; y < BDWIDTH; y++) {
-						if (gamePanel.getTile(x, y).getBounds()
+						if (gamePanel.getTileSprite(x, y).getBounds()
 								.contains(e.getPoint())) {
+							// if (gamePanel.getTile(x, y).getBounds()
+							// .contains(e.getPoint())) {
 							gamePanel.setActualClickPoint(new Point(mx, my));
 							tempPoint = new Point(x, y);
 							// gamePanel.pointClicked(new Point(x, y));
 							// gamePanel.DropTiles();
+
+							// gamePanel.OutputBoard();
+
 							gamePanel.boardCleared();
 							gamePanel.checkMoveCount();
 						} else {
@@ -246,6 +240,7 @@ public class MouseInput implements MouseListener, MouseMotionListener {
 					}
 				}
 				gamePanel.pointClicked(tempPoint);
+				// gamePanel.OutputBoard();
 			}
 
 			// gamePanel.boardCleared();
@@ -277,6 +272,7 @@ public class MouseInput implements MouseListener, MouseMotionListener {
 				gamePanel.setMoveCount(0);
 				// gamePanel.updateTileRow();
 				Game.State = GameState.GAME;
+				gamePanel.UpdateBoard();
 			}
 
 			// Gravity Button
@@ -284,6 +280,7 @@ public class MouseInput implements MouseListener, MouseMotionListener {
 				gamePanel.setGameIsOver(false);
 				gamePanel.setGameMode(2);
 				Game.State = GameState.GAME;
+				gamePanel.UpdateBoard();
 			}
 
 			// Critical Mass Button
@@ -292,6 +289,7 @@ public class MouseInput implements MouseListener, MouseMotionListener {
 				gamePanel.setGameMode(3);
 				gamePanel.checkCritMass();
 				Game.State = GameState.GAME;
+				gamePanel.UpdateBoard();
 			}
 
 			// Infinity Button
@@ -299,6 +297,7 @@ public class MouseInput implements MouseListener, MouseMotionListener {
 				gamePanel.setGameIsOver(false);
 				gamePanel.setGameMode(4);
 				Game.State = GameState.GAME;
+				gamePanel.UpdateBoard();
 			}
 
 		} else if (game.State == GameState.MENU) {

@@ -1,4 +1,4 @@
-BonusPoints:870
+BonusPoints:1120
 Classic:7760
 Gravity:1821
 CriticalMass:1132

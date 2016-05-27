@@ -48,6 +48,8 @@ public class TileGame {
 	/** This contains the list of moves made */
 	private Stack<String> undoList = new Stack<String>();
 
+	private Stack<String> undoRowList = new Stack<String>();
+
 	/**
 	 * This list contains the values of previously checked tiles when checking
 	 * shapes
@@ -252,9 +254,11 @@ public class TileGame {
 	public void createRow() {
 		for (int i = 0; i < BDWIDTH; i++) {
 			boardRow[i] = generateRandom();
-			prevBoardRow[i] = 0;
+			// prevBoardRow[i] = 0;
 			prevBoardRow[i] = boardRow[i];
 		}
+
+		// outputRow();
 
 		// rowCreated = true;
 	}
@@ -2159,6 +2163,7 @@ public class TileGame {
 			int count = 1;
 			int temp = board[x][y];
 			int tempNum = 0;
+			int cornerCount = 0;
 
 			int numX = 0;
 			int numY = 0;
@@ -2203,21 +2208,31 @@ public class TileGame {
 
 			if (inBounds(x - 1, y - 1) && temp == board[x - 1][y - 1]) {
 				NW = true;
+				cornerCount++;
 			}
 			if (inBounds(x + 1, y - 1) && temp == board[x + 1][y - 1]) {
 				SW = true;
+				cornerCount++;
 			}
 			if (inBounds(x + 1, y + 1) && temp == board[x + 1][y + 1]) {
 				SE = true;
+				cornerCount++;
 			}
 			if (inBounds(x - 1, y + 1) && temp == board[x - 1][y + 1]) {
 				NE = true;
+				cornerCount++;
 			}
 
-			if (sides == 1) {
+			// if (sides == 4 || cornerCount >= 3){
+			if (sides == 4) {
+				return;
+			} else if (sides == 1) {
 
 				if (up) {
 
+					if (NE && NW) {
+						return;
+					}
 					if (NE && !NW || !NE && NW) {
 						checkT(x - 1, y, num);
 					}
@@ -2233,11 +2248,18 @@ public class TileGame {
 							&& temp == board[x - tempNum][y + 1]) {
 						checkT(x - tempNum, y, num);
 					} else {
-						checkT(x - (tempNum / 2), y, num);
+						// if the tile tapped was in the top of the T the
+						// tempNum must be an odd number
+						if ((tempNum + 1) % 2 != 0) {
+							checkT(x - (tempNum / 2), y, num);
+						}
 					}
 
 				} else if (down) {
 
+					if (SE && SW) {
+						return;
+					}
 					if (SE && !SW || !SE && SW) {
 						checkT(x + 1, y, num);
 					}
@@ -2253,11 +2275,22 @@ public class TileGame {
 							&& temp == board[x + tempNum][y + 1]) {
 						checkT(x + tempNum, y, num);
 					} else {
-						checkT(x + (tempNum / 2), y, num);
+
+						// System.out.println(tempNum % 2);
+						// System.out.println((tempNum + 1) % 2);
+
+						// if the tile tapped was in the top of the T the
+						// tempNum must be an odd number
+						if ((tempNum + 1) % 2 != 0) {
+							checkT(x + (tempNum / 2), y, num);
+						}
 					}
 
 				} else if (left) {
 
+					if (SW && NW) {
+						return;
+					}
 					if (SW && !NW || !SW && NW) {
 						checkT(x, y - 1, num);
 					}
@@ -2273,12 +2306,19 @@ public class TileGame {
 							&& temp == board[x + 1][y - tempNum]) {
 						checkT(x, y - tempNum, num);
 					} else {
-						checkT(x, y - (tempNum / 2), num);
+						// if the tile tapped was in the top of the T the
+						// tempNum must be an odd number
+						if ((tempNum + 1) % 2 != 0) {
+							checkT(x, y - (tempNum / 2), num);
+						}
 					}
 
 				} else if (right) {
 
-					if (SW && !NW || !SW && NW) {
+					if (SE && NE) {
+						return;
+					}
+					if (SE && !NE || !SE && NE) {
 						checkT(x, y + 1, num);
 					}
 					while (inBounds(x, y + tempNum)
@@ -2293,7 +2333,11 @@ public class TileGame {
 							&& temp == board[x + 1][y + tempNum]) {
 						checkT(x, y + tempNum, num);
 					} else {
-						checkT(x, y + (tempNum / 2), num);
+						// if the tile tapped was in the top of the T the
+						// tempNum must be an odd number
+						if ((tempNum + 1) % 2 != 0) {
+							checkT(x, y + (tempNum / 2), num);
+						}
 					}
 				}
 			} else if (sides == 2) {
@@ -2427,7 +2471,6 @@ public class TileGame {
 					while (inBounds(x, y + numZ) && temp == board[x][y + numZ]) {
 						numZ++;
 					}
-
 				} else if (up && down && left && !right) {
 
 					while (inBounds(x - numX, y) && inBounds(x + numY, y)) {
@@ -2446,10 +2489,14 @@ public class TileGame {
 					while (inBounds(x, y - numZ) && temp == board[x][y - numZ]) {
 						numZ++;
 					}
-
 				}
 
 				if (num > 4) {
+
+					if (numX != numY || numX > numZ || numY > numZ) {
+						return;
+					}
+
 					if (num == ((numX + numY) - 1) + (numZ - 1)) {
 						T = true;
 					}
@@ -2795,32 +2842,10 @@ public class TileGame {
 	public void checkCreateRow() {
 		if (moveCount == rowDisplayCount - 1) {
 			createRow();
-			// rowCreated = true;
 		}
-
 	}
 
 	public void checkMoveCount() {
-
-		// rowDisplayCount = 15;
-		// rowDropCount = 25;
-		// boolean rowCreated
-
-		// if (moveCount == rowDisplayCount && !rowCreated) {
-		// createRow();
-		// // rowCreated = true;
-		// }
-		//
-		// if (moveCount >= 0 && moveCount < rowDisplayCount) {
-		// // createRow();
-		// rowCreated = false;
-		// } else {
-		// rowCreated = true;
-		// }
-
-		// if (moveCount == rowDisplayCount - 1) {
-		// createRow();
-		// }
 
 		if (tilesRemaining() > .65) {
 			moveCount = 0;
@@ -2831,10 +2856,6 @@ public class TileGame {
 			dropRow = true;
 		}
 
-		// System.out.println(tilesRemaining());
-		// && tilesRemaining() < .50
-
-		// if (moveCount >= rowDisplayCount) {
 		if (moveCount >= rowDisplayCount && moveCount < rowDropCount) {
 			displayRow = true;
 		}
@@ -2846,35 +2867,8 @@ public class TileGame {
 
 		if (moveCount < rowDisplayCount) {
 			displayRow = false;
+			dropRow = false;
 		}
-
-		// else if (moveCount < rowDisplayCount) {
-		// displayRow = false;
-		// // dropRow = false;
-		// }
-
-		// if (moveCount >= rowDisplayCount && !rowCreated && rowEmpty()) {
-		// createRow();
-		// }
-		// else if (moveCount == rowDropCount) {
-		// dropRow = true;
-		// }
-
-		// if (moveCount >= rowDisplayCount) {
-		// if (!displayRow) {
-		// // moveCount = rowDisplayCount;
-		// }
-		// displayRow = true;
-		// } else {
-		// displayRow = false;
-		// dropRow = false;
-		// }
-		//
-		// if (moveCount == rowDisplayCount && rowEmpty()) {
-		// createRow();
-		// } else if (moveCount >= rowDisplayCount + 10) {
-		// dropRow = true;
-		// }
 
 	}
 
@@ -2895,15 +2889,23 @@ public class TileGame {
 	public void mergeRow() {
 		// prevBoardRow = boardRow;
 		int temp = 0;
+		// int count = 0;
 
-		for (int i = 0; i < BDWIDTH; i++) {
-			prevBoardRow[i] = boardRow[i];
-			if (boardRow[i] != 0 && board[0][i] == 0) {
-
-				board[0][i] = boardRow[i];
-				boardRow[i] = 0;
-			}
-		}
+		// for (int i = 0; i < BDWIDTH; i++) {
+		// prevBoardRow[i] = boardRow[i];
+		// if (boardRow[i] != 0 && board[0][i] == 0) {
+		//
+		// while (inBounds(0, i + count) && board[0][i + count] == 0) {
+		// count++;
+		// }
+		//
+		// board[0][i + count - 1] = boardRow[i];
+		// boardRow[i] = 0;
+		//
+		// // board[0][i] = boardRow[i];
+		// // boardRow[i] = 0;
+		// }
+		// }
 
 		for (int i = 0; i < BDWIDTH; i++) {
 			if (boardRow[i] == 0) {
@@ -2917,7 +2919,7 @@ public class TileGame {
 			moveCount = 0;
 		}
 
-		DropTiles();
+		// DropTiles();
 
 	}
 
@@ -3386,6 +3388,8 @@ public class TileGame {
 	}
 
 	public void addUndo() {
+		String rowStr = "";
+
 		undoListStr = "";
 		for (int x = 0; x < BDHEIGHT; x++) {
 			for (int y = 0; y < BDWIDTH; y++) {
@@ -3397,9 +3401,29 @@ public class TileGame {
 		undoList.push(undoListStr);
 		scoreUndoList.push((int) score);
 		bonusPtUndoList.push(bonusPoints);
+
+		if (gameMode == 1 && moveCount > rowDisplayCount - 1) {
+			for (int i = 0; i < BDWIDTH; i++) {
+				rowStr += boardRow[i];
+				rowStr += ",";
+			}
+			undoRowList.push(rowStr);
+		}
 	}
 
 	public void Undo() {
+		String rowStr = "";
+
+		if (gameMode == 1 && !undoRowList.isEmpty()) {
+			rowStr = undoRowList.peek();
+			undoRowList.pop();
+
+			String[] undoRowArray = rowStr.split(",");
+
+			for (int i = 0; i < BDWIDTH; i++) {
+				boardRow[i] = Integer.parseInt(undoRowArray[i]);
+			}
+		}
 
 		if (!undoList.isEmpty()) {
 
@@ -3417,19 +3441,20 @@ public class TileGame {
 				}
 			}
 
-			for (int b = 0; b < BDWIDTH; b++) {
-				boardRow[b] = prevBoardRow[b];
-			}
-
-			// if (moveCount == 0) {
-			// moveCount = prevMoveCount;
-			// } else {
-			// moveCount--;
+			// if (gameMode == 1 && !undoRowList.isEmpty()) {
+			// rowStr = undoRowList.peek();
+			// undoRowList.pop();
+			//
+			// String[] undoRowArray = rowStr.split(",");
+			//
+			// for (int j = 0; j < BDWIDTH; j++) {
+			// boardRow[j] = Integer.parseInt(undoRowArray[j]);
+			// }
 			// }
 
-			// System.out.println(moveCount);
-
-			// boardRow = prevBoardRow;
+			// for (int b = 0; b < BDWIDTH; b++) {
+			// boardRow[b] = prevBoardRow[b];
+			// }
 
 			score = scoreUndoList.peek();
 			scoreUndoList.pop();
@@ -3445,16 +3470,22 @@ public class TileGame {
 				score -= 25;
 			}
 		}
-
 	}
 
 	public void outputBoard() {
 		for (int x = 0; x < BDHEIGHT; x++) {
 			for (int y = 0; y < BDWIDTH; y++) {
-				System.out.print(board[y][x]);
+				System.out.print(board[x][y]);
 			}
 			System.out.println();
 		}
+	}
+
+	public void outputRow() {
+		for (int i = 0; i < BDWIDTH; i++) {
+			System.out.print(boardRow[i] + ", ");
+		}
+		System.out.println();
 	}
 
 	public void boardCleared() {
@@ -3832,7 +3863,7 @@ public class TileGame {
 	}
 
 	public void addMoveCount() {
-		// prevMoveCount = moveCount;
+		prevMoveCount = moveCount;
 		moveCount++;
 	}
 
@@ -3840,8 +3871,11 @@ public class TileGame {
 		if (moveCount > 0) {
 			moveCount--;
 		} else if (moveCount == 0) {
-			// moveCount = prevMoveCount;
-			moveCount = rowDropCount - 1;
+			if (prevMoveCount == rowDropCount - 1) {
+				moveCount = rowDropCount - 1;
+			} else {
+				moveCount = prevMoveCount;
+			}
 		}
 	}
 
@@ -3889,6 +3923,18 @@ public class TileGame {
 
 	public void setCritMassPercentages(Stack<String> critMassPercentages) {
 		this.critMassPercentages = critMassPercentages;
+	}
+
+	public int getRowVal(int i) {
+		return boardRow[i];
+	}
+
+	public void setRowVal(int i, int val) {
+		boardRow[i] = val;
+	}
+
+	public void setPrevRowVal(int i, int val) {
+		prevBoardRow[i] = val;
 	}
 
 	public boolean getDropRow() {
@@ -3973,7 +4019,7 @@ public class TileGame {
 
 	public void setDirection(int direction) {
 		TileGame.direction = direction;
-		DropTiles();
+		// DropTiles();
 	}
 
 	public int getScore() {

@@ -1,6 +1,18 @@
 //***********************
 Game Notes / Ideas:
-//***********************
+//*********************** 
+
+[] Render page by pixels instead of by objects
+
+[] Add frame cap to the games engine 
+
+[] Allow players to break other tiles while some are animated, if they are not in the same area
+
+[] Critical Mass: sometimes clicking a pair sets all tiles to black or only a single tile is removed
+
+[] Critical Mass: when direction is down dont render tiles until they come onto the game grid
+
+[] Fix lag when breaking tiles and having the animation
 
 [] Add a Power-up label above the in game power-ups
 
@@ -47,6 +59,19 @@ Game Notes / Ideas:
 //****************************************************************************************
 COMPLETED!
 //****************************************************************************************
+3-20-16
+[+] Added tile row stack to the undo method, makes undo with the tile row work better
+[+] Fix merge row when board is still at the top 
+[+] Fix board shift in Classic mode when there is an empty Column
+[+] Fix lag/flashing in gravity when switching directions
+[+] Make sure the user cannot tap direction arrows when animating
+[+] Incorrectly saying sweet T when shape is not correct
+[+] Fix bug with bonus row not dropping correctly 
+[+] Classic: sometimes tile row begins to animate from their destination position 
+[+] stop all animations if the undo button is pressed
+[+] add and update board after tapping undo
+3-19-16
+[+] New Tiles are not being created in Critical mass 
 2-15-16
 [+] Crit Mass: when undo makes percentage dip below power-up threshold the button should become disabled
 [+] Gravity: Board should update when the arrow buttons are tapped
